@@ -12,6 +12,7 @@ import { Contacts } from './app/pages/contacts/Contacts.jsx'
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
+      {/* When adding new pages, add import your page name at the top and then copy the route code pattern and add new page name below */}
       <Route path="/" element={ <App/> }/>
       <Route path='login' element={<Login/>}/>
       <Route path='register' element={<Register/>}/>

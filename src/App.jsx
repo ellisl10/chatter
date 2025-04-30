@@ -9,6 +9,7 @@ function App() {
         <h1>Chatter</h1>
       </div>
       <nav>
+        {/* Add link to different pages here */}
         <ul>
           <li>
             <Link to="/">Home</Link>
