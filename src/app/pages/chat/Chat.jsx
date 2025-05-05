@@ -35,7 +35,8 @@ export function Chat() {
     const [selectedContact, setSelectedContact] = useState(null);
     const [messagesByContact, setMessagesByContact] = useState({});
     const [newMessage, setNewMessage] = useState('');  
-
+    const messages = selectedContact ? messagesByContact[selectedContact.id] || [] : [];
+    
     const navigate = useNavigate();
     
     useEffect(() => {
