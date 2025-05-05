@@ -49,7 +49,7 @@ export function Chat() {
     }, []);
 
     const messages = selectedContact ? messagesByContact[selectedContact.id] || [] : [];
-    
+
     const handleProfileClick = () => {
         navigate('/Settings')
     };
@@ -75,7 +75,6 @@ export function Chat() {
     return (
         <>
             <div className="chat-container">
-                <h1 id="chatter">Chatter</h1>
                 <aside className="sidebar">
                     <div className="sidebar-header" onClick={handleProfileClick}>
                         <div className="user-avatar" />
