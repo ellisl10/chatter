@@ -36,8 +36,24 @@ export function Chat() {
     const [messagesByContact, setMessagesByContact] = useState({});
     const [newMessage, setNewMessage] = useState('');  
 
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
     
     useEffect(() => {
         const storedUsername = localStorage.getItem('username') || 'User Name';
