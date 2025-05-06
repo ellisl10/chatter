@@ -11,6 +11,10 @@ body, .chat-container, .sidebar, .chat-main {
 }
 
 .sidebar {
+    position:absolute;
+    height:100vh;
+    top:0;
+    z-index:10;
     left:0;
     width: 100%;
     border-bottom: 1px solid #ccc;
@@ -91,6 +95,8 @@ body, .chat-container, .sidebar, .chat-main {
     flex-direction: column;
     background-color: #fff;
     overflow-y: auto;
+    margin-left: 300px;
+    width: calc(100% - 300px);
 }
 
 .chat-header {
