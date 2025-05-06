@@ -160,6 +160,7 @@ body, .chat-container, .sidebar, .chat-main {
     display: flex;
     padding: 1rem;
     border-top: 1px solid #ddd;
+    background-color: #ccc;
 }
 
 .chat-input input {
