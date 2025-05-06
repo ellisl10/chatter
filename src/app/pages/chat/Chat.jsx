@@ -121,8 +121,9 @@ export function Chat() {
                     <div className="chat-status">Online</div>
                     </div>
                     <div className="chat-messages">
-                    {messages.map((msg, idx) => (
-                        <div key={idx} className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}>
+                    {messages.map((msg) => (
+                        <div key={`${msg.from}-${msg.text}-${msg.timestamp}`} 
+                            className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}>
                         {msg.text}
                             <div className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}>
                             {msg.text}
