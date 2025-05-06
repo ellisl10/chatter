@@ -1,5 +1,5 @@
 body, .chat-container, .sidebar, .chat-main {
-    color: black !important;
+    color: black;
 }
 
 .chat-container {
@@ -112,23 +112,37 @@ body, .chat-container, .sidebar, .chat-main {
     flex-grow: 1;
     padding: 1rem;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .message {
     max-width: 60%;
-    margin-bottom: 1rem;
     padding: 0.75rem;
     border-radius: 10px;
+}
+
+.message-timestamp {
+    font-size: 0.75rem;
+    color: #666;
+    text-align: right;
+    margin-top: 0.25rem;
 }
 
 .message.incoming {
     background-color: #f0f0f0;
     align-self: flex-start;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
 }
 
 .message.outgoing {
-    background-color: #ccc;
+    background-color: #007bff;
+    color: white !important;
     align-self: flex-end;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
 }
 
 .chat-input {

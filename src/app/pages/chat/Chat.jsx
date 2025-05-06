@@ -124,6 +124,12 @@ export function Chat() {
                     {messages.map((msg, idx) => (
                         <div key={idx} className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}>
                         {msg.text}
+                            <div className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}>
+                            {msg.text}
+                                <div className="message-timestamp">
+                                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                            </div>
                         </div>
                     ))}
                     </div>
