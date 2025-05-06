@@ -11,6 +11,7 @@ body, .chat-container, .sidebar, .chat-main {
 }
 
 .sidebar {
+    left:0;
     width: 100%;
     border-bottom: 1px solid #ccc;
     background-color: #f3f3f3;
