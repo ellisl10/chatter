@@ -1,48 +1,42 @@
 
-import './Login.css'
+import styles from './Login.module.css'
 
 export function Login() {
 
     return (
         <>
-            <div id='main-container'>
-                <div id='login-section'>
-                    <div className="title-container">
-                        <h1 id='Chatter'>Chatter</h1>
+            <div className={styles.mainContainer}>
+                <div className={styles.loginSection}>
+                    <div className={styles.titleContainer}>
+                        <h1 className={styles.chatter}>Chatter</h1>
                         <h1>Log In</h1>
                     </div>
 
                     {/* Need to add form validation */}
-                    <div className="inputs">
-                        <div className="input">
-                            <input 
-                                type="text" 
-                                placeholder='Username' 
-                                />
+                    <div className={styles.inputs}>
+                        <div className={styles.input}>
+                            <input type="text" placeholder='Username' />
                         </div>
-                        <div className="input">
-                            <input 
-                                type="password" 
-                                placeholder='Password' 
-                                />
+                        <div className={styles.input}>
+                            <input type="password" placeholder='Password' />
                         </div>
                     </div>
 
-
-                    <div className="submit-container">
-                        <div className="submit">
+                    <div className={styles.submitContainer}>
+                        <div className={styles.submit}>
                             <button>Sign In</button>
                         </div>
                     </div>
-                    <div className="forgot-password">Don't have an account yet? <span>Create an account!</span></div>
+                    <div className={styles.forgotPassword}>Don't have an account yet? 
+                        <a href='/register'> Create an account!</a>
+                    </div>
                 </div>
-
 
 
                 {/* Fix gray area right of image on large screen sizes */}
                 {/* Add dropshadow on image */}
-                <div id="graphic-section">
-                    <img src="src/assets/mockup-ss.png" alt="" className='responsive'/>
+                <div className={styles.graphicSection}>
+                    <img src="src/assets/mockup-ss.png" alt="" className={styles.responsive}/>
                 </div>
             </div>
         </>

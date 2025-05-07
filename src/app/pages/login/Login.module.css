@@ -1,16 +1,11 @@
-#root {
-    padding:0;
-    overflow-x: hidden;
-}
-  
-#main-container {
+.mainContainer {
     display: flex;
     flex-direction: row;
     width: 100vw;
     height: 100vh;
 }
 
-#login-section {
+.loginSection {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -21,7 +16,7 @@
 
 }
 
-#graphic-section {
+.graphicSection {
     width: 40%;
     background-color: #3571FF;
     display: flex;
@@ -36,15 +31,15 @@
     margin-left: 8vw;
 }
 
-.title-container {
+.titleContainer {
     text-align: left;
 }
 
-.title-container h1{
+.titleContainer h1{
     margin-bottom: 0;
 }
 
-#Chatter {
+.chatter {
     color: #3571FF;
 }
 
@@ -63,18 +58,18 @@
     border: 2px solid #C6C5C5;
 }
 
-.submit-container {
+.submitContainer {
     margin-top: 20px;
     margin-bottom: 30px;
 }
 
-.submit-container button {
+.submitContainer button {
     width: 20.5vw;
     background-color: #3571FF;
     color: white;
 }
 
-.forgot-password span {
+.forgotPassword a {
     color: #3571FF;
     cursor: pointer;
 }
