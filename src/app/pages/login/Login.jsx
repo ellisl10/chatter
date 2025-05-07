@@ -1,3 +1,4 @@
+
 import './Login.css'
 
 export function Login() {
@@ -11,6 +12,7 @@ export function Login() {
                         <h1>Log In</h1>
                     </div>
 
+                    {/* Need to add form validation */}
                     <div className="inputs">
                         <div className="input">
                             <input 
@@ -37,9 +39,10 @@ export function Login() {
 
 
 
-                {/* Add picture here still and figure out responsive design for picture size */}
+                {/* Fix gray area right of image on large screen sizes */}
+                {/* Add dropshadow on image */}
                 <div id="graphic-section">
-                    <h1>Picture</h1>
+                    <img src="src/assets/mockup-ss.png" alt="" className='responsive'/>
                 </div>
             </div>
         </>

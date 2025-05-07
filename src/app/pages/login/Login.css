@@ -1,5 +1,6 @@
 #root {
     padding:0;
+    overflow-x: hidden;
 }
   
 #main-container {
@@ -23,6 +24,16 @@
 #graphic-section {
     width: 40%;
     background-color: #3571FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.responsive {
+    max-width: 100%;
+    height: auto;
+    transform: rotate(20deg);
+    margin-left: 8vw;
 }
 
 .title-container {
@@ -32,8 +43,6 @@
 .title-container h1{
     margin-bottom: 0;
 }
-
-
 
 #Chatter {
     color: #3571FF;
