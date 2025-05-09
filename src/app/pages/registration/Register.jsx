@@ -1,25 +1,28 @@
-import { useState } from 'react';
+import * as formik from 'formik';
+import * as yup from 'yup';
 import styles from './Register.module.css'
 
 export function Register() {
 
-    const [formData, setFormData] = useState({
-        email: "",
-        username: "",
-        password: "",
-        confirmPassword: "",
+    // I should lowkey just use react bootstrap and make it easier
+
+    const {values, handleBlur, handleChange}  = formik.useFormik({
+        initialValues: {
+            email: "",
+            username: "",
+            password: "",
+            confirmPassword: "",
+        },   
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
-    }
+    const schema = yup.object().shape({
+        email: yup.string().email().required(),
+        username: yup.string().required(),
+        password: yup.string().required().min(8, 'Password must be at least 8 characters'),
+        confirmPassword: yup.string().required().min(8, 'Password must be at least 8 characters')
+    })
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value })
-    }
-
+    console.log(values)
     return (
         <>
             <div className={styles.mainContainer}>
@@ -31,48 +34,28 @@ export function Register() {
 
                     {/* Need to add form validation */}
                     <div className={styles.formWrapper}>
-                        <form onSubmit={handleSubmit}>
-                            <div className={styles.input}>
-                                <input 
-                                type='email' 
-                                name='email' 
-                                placeholder='Email' 
-                                onChange={handleChange} 
-                                value={formData.email}
-                                />
-                            </div>
-                            <div className={styles.input}>
-                                <input 
-                                type='text' 
-                                name='username' 
-                                placeholder='Username' 
-                                onChange={handleChange} 
-                                value={formData.username}
-                                />
-                            </div>
-                            <div className={styles.input}>
-                                <input 
-                                type='password' 
-                                name='password' 
-                                placeholder='Password' 
-                                onChange={handleChange} 
-                                value={formData.password}
-                                />
-                            </div>
-                            <div className={styles.input}>
-                                <input 
-                                type='password' 
-                                name='confirmPassword' 
-                                placeholder='Confirm Password' 
-                                onChange={handleChange} 
-                                value={formData.confirmPassword}
-                                />
-                            </div>
-                            <div className={styles.submitContainer}>
-                                <div className={styles.submit}>
-                                    <button type='Submit'>Sign In</button>
-                                </div>
-                            </div>
+                        <form>
+                            <input 
+                            value={values.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            id="email" type="email" placeholder="Email" />
+                            <input 
+                            value={values.username}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            id="username" type="text" placeholder="Username" />
+                            <input 
+                            value={values.password}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            id="password" type="password" placeholder="Password" />
+                            <input 
+                            value={values.confirmPassword}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            id="confirmPassword" type="password" placeholder="Confirm Password" />
+                            <button type="submit">Create Account</button>
                         </form>
                     </div>
 
