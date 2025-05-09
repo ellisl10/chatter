@@ -109,12 +109,16 @@ html, body, #root {
   margin-top: 0;
   display: flex;
   flex-direction: column;
+  width: calc(100% - 300px);
+  max-width: calc(100% - 300px);
 }
 
 .chat-header {
     padding: 1rem;
     background-color: #eee;
     border-bottom: 1px solid #ddd;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .chat-username {
@@ -178,6 +182,8 @@ html, body, #root {
     padding: 1rem;
     border-top: 1px solid #ddd;
     background-color: #ccc;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .chat-input input {
@@ -247,6 +253,8 @@ html, body, #root {
     margin-left: 0;
     height: auto;
     min-height: calc(60vh - 60px);
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 
