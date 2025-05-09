@@ -1,8 +1,12 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
+html, body, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
   overflow-x: hidden;
+}
+
+body, #root {
+  outline: 2px solid blue;
 }
 
 .chat-container {
