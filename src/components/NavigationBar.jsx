@@ -9,7 +9,7 @@ export default function NavigationBar() {
     return (
         <nav className="navbar fixed-top navbar-expand-xl navbar-dark bg-dark">
             <a className="navbar-brand" href="#">Chatter</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
