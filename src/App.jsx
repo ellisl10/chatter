@@ -1,10 +1,12 @@
 import './App.css'
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import NavigationBar from './components/NavigationBar.jsx';
 
 function App() {
-
   return (
     <>
+      <NavigationBar />
       <div>
         <h1>Chatter</h1>
       </div>
