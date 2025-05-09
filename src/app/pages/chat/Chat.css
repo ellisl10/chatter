@@ -1,12 +1,8 @@
-body, .chat-container, .sidebar, .chat-main {
-  color: black;
-}
-
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    overflow-x: hidden;
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .chat-container {
@@ -17,7 +13,12 @@ body, html {
   font-family: sans-serif;
   overflow: hidden;
   padding-top: 80px;
+  margin: 0;
+  position: relative;
+  left: 0;
+  right: 0;
   box-sizing: border-box;
+  outline: 2px solid red; /* Debug: remove after testing */
 }
 
 .sidebar {
