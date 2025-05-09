@@ -2,6 +2,12 @@ body, .chat-container, .sidebar, .chat-main {
   color: black;
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -9,7 +15,7 @@ body, .chat-container, .sidebar, .chat-main {
   width: 100vw;
   font-family: sans-serif;
   overflow: hidden;
-  padding-top: 60px;
+  padding-top: 80px;
 }
 
 .sidebar {
