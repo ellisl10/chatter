@@ -88,6 +88,10 @@ export function Chat() {
         }
     };
 
+    const handleViewAllClick = () => {
+        navigate('/contacts');
+    };
+
     return (
         
         <>
@@ -116,7 +120,7 @@ export function Chat() {
                         </div>
                         ))}
                     </div>
-                    <div className="view-all">View All</div>
+                    <div className="view-all" onClick={handleViewAllClick}>View All</div>
                     </aside>
 
                     <main className="chat-main">
