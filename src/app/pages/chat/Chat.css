@@ -117,10 +117,11 @@
   flex: 1;
   height: calc(100vh - 60px);
   margin-top: 0;
+  margin-left: 300px;
   display: flex;
   flex-direction: column;
-  width: calc(100vw - 300px);
-  max-width: calc(100vw - 300px);
+  width: auto;
+  max-width: none;
   box-sizing: border-box;
   overflow: hidden;
 }
