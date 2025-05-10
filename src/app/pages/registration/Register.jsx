@@ -1,8 +1,12 @@
+import React from 'react';
+import NavigationBar from '../../../components/NavigationBar';
 
 export function Register() {
     return (
         <>
-            <h1>Registration Page</h1>
+        <NavigationBar />
+
+            <h1 style={{ textAlign: 'center', marginTop: 56 }}>Register Page</h1>        
         </>
     )
 }
