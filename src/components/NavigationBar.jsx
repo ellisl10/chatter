@@ -8,9 +8,12 @@ export default function NavigationBar() {
     const isActive = (path) => location.pathname === path;
     return (
         <nav className="navbar fixed-top navbar-expand-xl navbar-dark bg-dark">
-            <a className="navbar-brand" href="#">Chatter</a>
+            <a className="navbar-brand" href="#">
+                <img src="src/assets/message-icon.png" className="chatter-logo" width="30" height="30" />
+                Chatter
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <span className="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav">
