@@ -7,11 +7,10 @@ function App() {
   return (
     <>
       <NavigationBar />
-      <div>
-        <h1>Chatter</h1>
+      <div style={{ textAlign: 'center', marginTop: 56 }}>
+      <h1>Chatter</h1>
       </div>
       <nav>
-        {/* Add link to different pages here */}
         <ul>
           <li>
             <Link to="/">Home</Link>
@@ -27,6 +26,9 @@ function App() {
           </li>
           <li>
             <Link to="/contacts">Contacts</Link>
+          </li>
+          <li>
+            <Link to="/settings">Settings</Link>
           </li>
         </ul>
       </nav>

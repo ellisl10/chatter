@@ -1,9 +1,13 @@
+import React from 'react';
+import NavigationBar from '../../../components/NavigationBar';
 import './Login.css'
 
 export function Login() {
 
     return (
         <>
+            <NavigationBar />
+
             <div id='main-container'>
                 <div id='login-section'>
                     <div className="title-container">
@@ -35,9 +39,6 @@ export function Login() {
                     <div className="forgot-password">Don't have an account yet? <span>Create an account!</span></div>
                 </div>
 
-
-
-                {/* Add picture here still and figure out responsive design for picture size */}
                 <div id="graphic-section">
                     <h1>Picture</h1>
                 </div>

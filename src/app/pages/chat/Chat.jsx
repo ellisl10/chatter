@@ -1,7 +1,12 @@
+import React from 'react';
+import NavigationBar from '../../../components/NavigationBar';
+
 export function Chat() {
     return (
         <>
-            <h1>Chat Page</h1>
-        </>
+            <NavigationBar />
+
+                  <h1 style={{ textAlign: 'center', marginTop: 56 }}>Chat Page</h1>
+            </>
     )
 }
