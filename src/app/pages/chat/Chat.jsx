@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import './Chat.css';
 import NavigationBar from '../../../components/NavigationBar';
+import MarginFix from '../../../components/MarginFix';
 
 const mockContacts = [
     { id: 1, name: 'John Doe', lastMessage: 'Last message' },
@@ -35,6 +36,7 @@ export function Chat() {
     const [selectedContact, setSelectedContact] = useState(null);
     const [messagesByContact, setMessagesByContact] = useState({});
     const [newMessage, setNewMessage] = useState('');
+    MarginFix('chat-mode');
 
     const navigate = useNavigate();
 
@@ -87,6 +89,7 @@ export function Chat() {
     };
 
     return (
+        
         <>
         <NavigationBar />
         <div className="chat-page-wrapper">
