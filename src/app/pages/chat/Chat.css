@@ -123,8 +123,8 @@
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: none;
+  width: calc(100vw - 300px);
+  max-width: calc(100vw - 300px);
   box-sizing: border-box;
 }
 
