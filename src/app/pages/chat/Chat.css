@@ -13,7 +13,6 @@
 }
 
 .chat-inner-wrapper {
-    padding-left: 300px;
     height: 100vh;
     box-sizing: border-box;
     overflow: hidden;
@@ -25,7 +24,6 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  position: relative;
   box-sizing: border-box;
   padding-top: 60px;
 }
@@ -121,8 +119,8 @@
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 100%;
+  width: calc(100vw - 300px);
+  max-width: calc(100vw - 300px);
   box-sizing: border-box;
   overflow: hidden;
 }
