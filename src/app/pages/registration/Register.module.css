@@ -37,6 +37,7 @@
 }
 
 .titleContainer h1{
+    font-weight: bold;
     margin-bottom: 0;
 }
 
@@ -66,7 +67,7 @@ select:focus {
 
 input {
     width: 24vw;
-    height: 4vh;
+    height: 5vh;
     border-radius: 10px;
     border: 2px solid #C6C5C5;
 }
@@ -80,6 +81,7 @@ input {
     width: 25vw;
     background-color: #3571FF;
     color: white;
+    border-radius: 10px;
 }
 
 .forgotPassword a {
