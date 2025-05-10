@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import './Chat.module.css';
+import './Chat.css';
 import NavigationBar from '../../../components/NavigationBar';
 
 const mockContacts = [
