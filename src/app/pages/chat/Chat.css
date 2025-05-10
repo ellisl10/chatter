@@ -3,6 +3,7 @@ html, body, #root {
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow-x: hidden;
 }
 
 .chat-container {
@@ -108,8 +109,9 @@ html, body, #root {
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  width: auto;
+  width: 100%;
   max-width: none;
+  box-sizing: border-box;
 }
 
 .chat-header {
