@@ -29,22 +29,18 @@
 }
 
 .sidebar {
-    flex: 0 0 300px;
+    width: 300px;
+    min-width: 300px;
     height: calc(100vh - 60px);
-    left: 0;
-    top: 60px;
-    position: fixed;
-    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     background-color: #f3f3f3;
     display: flex;
     flex-direction: column;
     padding: 1rem;
     box-sizing: border-box;
-    position: static;
-    border-right: 1px solid #ccc;
     overflow-y: auto;
-    position: fixed;
     z-index: 10;
+    position: relative;
 }
 
 .sidebar-header {
@@ -112,16 +108,12 @@
 }
 
 .chat-main {
-  flex-grow: 1;
-  height: calc(100vh - 60px);
-  margin-top: 0;
-  margin-left: 300px;
-  display: flex;
-  flex-direction: column;
-  width: auto;
-  max-width: none;
-  box-sizing: border-box;
-  overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px);
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .chat-header {
