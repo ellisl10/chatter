@@ -108,8 +108,8 @@ html, body, #root {
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 300px);
-  max-width: calc(100% - 300px);
+  width: auto;
+  max-width: none;
 }
 
 .chat-header {
