@@ -26,6 +26,10 @@
   padding: 0;
   box-sizing: border-box;
   padding-top: 60px;
+  position: relative;
+  left: 0 !important;
+  margin-left: 0 !important;
+  transform: none !important;
 }
 
 .sidebar {
