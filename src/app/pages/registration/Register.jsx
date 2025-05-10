@@ -1,7 +1,7 @@
 import * as formik from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router'; // get rid of this later
 
 
 export function Register() {
@@ -14,10 +14,10 @@ export function Register() {
 
     // I should lowkey just use react bootstrap and make it easier
     const schema = yup.object().shape({
-        email: yup.string().email().required(),
-        username: yup.string().required(),
-        password: yup.string().required().min(8, 'Password must be at least 8 characters'),
-        confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required().
+        email: yup.string().email().required('Email is required'),
+        username: yup.string().required('Username is required'),
+        password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
+        confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Please confirm password').
                         min(8, 'Password must be at least 8 characters')
     })
     const {values, errors, touched, handleBlur, handleChange, handleSubmit}  = formik.useFormik({

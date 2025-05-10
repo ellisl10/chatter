@@ -43,7 +43,7 @@
     color: #3571FF;
 }
 
-.inputs {
+.formWrapper {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
@@ -51,8 +51,19 @@
     gap: 25px;
 }
 
-.input input {
-    width: 20vw;
+input:focus,
+select:focus {
+    border-style: solid;
+    border-color: #3571FF;
+    outline: none;
+}
+
+.input {
+    padding: 7px;
+}
+
+input {
+    width: 24vw;
     height: 4vh;
     border-radius: 10px;
     border: 2px solid #C6C5C5;
@@ -64,7 +75,7 @@
 }
 
 .submitContainer button {
-    width: 20.5vw;
+    width: 25vw;
     background-color: #3571FF;
     color: white;
 }
@@ -72,4 +83,16 @@
 .forgotPassword a {
     color: #3571FF;
     cursor: pointer;
+}
+
+.inputError {
+    border-color: rgb(255, 94, 94);
+    border-style:solid;
+}
+
+.error {
+  color: #fc8181; 
+  font-size: 0.75rem;
+  text-align: left;
+  margin: 0;
 }
