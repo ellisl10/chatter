@@ -90,60 +90,62 @@ export function Chat() {
         <>
         <NavigationBar />
         <div className="chat-page-wrapper">
-            <div className="chat-container">
-                <aside className="sidebar">
-                <div className="sidebar-header" onClick={handleProfileClick}>
-                    <div className="user-avatar" />
-                    <span className="username">{username}</span>
-                </div>
-                <button className="new-chat-button" onClick={handleNewChat}>New Chat</button>
-                <div className="contact-list">
-                    {contacts.map((contact) => (
-                    <div
-                        key={contact.id}
-                        className={`contact-item ${selectedContact?.id === contact.id ? 'active' : ''}`}
-                        onClick={() => handleContactClick(contact)}
-                    >
-                        <div className="contact-avatar" />
-                        <div>
-                        <div className="contact-name">{contact.name}</div>
-                        <div className="contact-subtext">{contact.lastMessage}</div>
-                        </div>
+            <div className="chat-inner-wrapper">
+                <div className="chat-container">
+                    <aside className="sidebar">
+                    <div className="sidebar-header" onClick={handleProfileClick}>
+                        <div className="user-avatar" />
+                        <span className="username">{username}</span>
                     </div>
-                    ))}
-                </div>
-                <div className="view-all">View All</div>
-                </aside>
+                    <button className="new-chat-button" onClick={handleNewChat}>New Chat</button>
+                    <div className="contact-list">
+                        {contacts.map((contact) => (
+                        <div
+                            key={contact.id}
+                            className={`contact-item ${selectedContact?.id === contact.id ? 'active' : ''}`}
+                            onClick={() => handleContactClick(contact)}
+                        >
+                            <div className="contact-avatar" />
+                            <div>
+                            <div className="contact-name">{contact.name}</div>
+                            <div className="contact-subtext">{contact.lastMessage}</div>
+                            </div>
+                        </div>
+                        ))}
+                    </div>
+                    <div className="view-all">View All</div>
+                    </aside>
 
-                <main className="chat-main">
-                <div className="chat-header">
-                    <div className="chat-username">{selectedContact?.name || 'Select a contact'}</div>
-                    <div className="chat-status">Online</div>
-                </div>
-                <div className="chat-messages">
-                    {messages.map((msg, idx) => (
-                    <div
-                        key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
-                        className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}
-                    >
-                        {msg.text}
-                        <div className="message-timestamp">
-                        {msg.timestamp && new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </div>
+                    <main className="chat-main">
+                    <div className="chat-header">
+                        <div className="chat-username">{selectedContact?.name || 'Select a contact'}</div>
+                        <div className="chat-status">Online</div>
                     </div>
-                    ))}
+                    <div className="chat-messages">
+                        {messages.map((msg, idx) => (
+                        <div
+                            key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
+                            className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}
+                        >
+                            {msg.text}
+                            <div className="message-timestamp">
+                            {msg.timestamp && new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                        </div>
+                        ))}
+                    </div>
+                    <div className="chat-input">
+                        <input
+                        type="text"
+                        placeholder="Type a message..."
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                        />
+                        <button className="send-button" onClick={handleSendMessage}>➤</button>
+                    </div>
+                    </main>
                 </div>
-                <div className="chat-input">
-                    <input
-                    type="text"
-                    placeholder="Type a message..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    />
-                    <button className="send-button" onClick={handleSendMessage}>➤</button>
-                </div>
-                </main>
             </div>
         </div>
         </>
