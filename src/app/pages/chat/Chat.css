@@ -12,6 +12,13 @@
     max-width: 100% !important
 }
 
+.chat-page-wrapper #root {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
 .chat-inner-wrapper {
     height: 100vh;
     box-sizing: border-box;
