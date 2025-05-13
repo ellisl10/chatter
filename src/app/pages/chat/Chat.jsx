@@ -36,6 +36,15 @@ export function Chat() {
     const [selectedContact, setSelectedContact] = useState(null);
     const [messagesByContact, setMessagesByContact] = useState({});
     const [newMessage, setNewMessage] = useState('');
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    const [showModal, setShowModal] = useState(false);
+    const [selectedContacts, setSelectedContacts] = useState([]);
+    const [newContactName, setNewContactName] = useState('');
+=======
+>>>>>>> parent of 2f17b73 (First draft group chat implementation)
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
     MarginFix('chat-mode');
 
     const navigate = useNavigate();
@@ -56,8 +65,48 @@ export function Chat() {
 
     const handleContactClick = (contact) => {
         setSelectedContact(contact);
+<<<<<<< HEAD
     };
 
+    const handleSendMessage = () => {
+        if (!newMessage.trim() || !selectedContact) return;
+
+        setMessagesByContact((prev) => {
+        const prevMessages = prev[selectedContact.id] || [];
+        return {
+            ...prev,
+            [selectedContact.id]: [...prevMessages, { from: 'me', text: newMessage.trim(), timestamp: new Date().toISOString() }],
+        };
+        });
+
+        setNewMessage('');
+    };
+
+=======
+    };
+
+<<<<<<< HEAD
+    // Open new chat modal
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
+    const handleNewChat = () => {
+        const existingIds = Object.keys(messagesByContact).map(Number);
+        const remainingContacts = contacts.filter(c => !existingIds.includes(c.id));
+
+        if (remainingContacts.length > 0) {
+        const newContact = remainingContacts[0];
+        setMessagesByContact(prev => ({
+            ...prev,
+            [newContact.id]: [{ from: 'them', text: 'Hello, let\'s chat!', timestamp: new Date().toISOString() }]
+        }));
+        setSelectedContact(newContact);
+        } else {
+        alert('All contacts are already in chats!');
+        }
+    };
+
+<<<<<<< HEAD
+=======
+=======
     const handleSendMessage = () => {
         if (!newMessage.trim() || !selectedContact) return;
 
@@ -88,10 +137,15 @@ export function Chat() {
         }
     };
 
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
     const handleViewAllClick = () => {
         navigate('/contacts');
     };
 
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 2f17b73 (First draft group chat implementation)
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
     return (
         
         <>
@@ -100,6 +154,54 @@ export function Chat() {
             <div className="chat-inner-wrapper">
                 <div className="chat-container">
                     <aside className="sidebar">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                        <div className="sidebar-header" onClick={handleProfileClick}>
+                            <div className="user-avatar" />
+                            <span className="username">{username}</span>
+                        </div>
+                        <button className="new-chat-button" onClick={handleNewChat}>+ New Chat</button>
+
+                        <div className="modal" style={{ display: showModal ? 'block' : 'none' }}>
+                            <h3>Create Group Chat</h3>
+                            {contacts.map((contact) => (
+                                <div key={contact.id}>
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => handleContactSelect(contact.id)}
+                                    />
+                                    {contact.name}
+                                </div>
+                            ))}
+                            <button onClick={handleCreateGroup}>Create Group</button>
+                            <button onClick={() => setShowModal(false)}>Cancel</button>
+                        </div>
+
+                        <div className="contact-list">
+                            <h4>Contacts</h4>
+                            {contacts.map((contact) => (
+                                <div
+                                    key={contact.id}
+                                    className={`contact-item ${selectedChat?.id === contact.id ? 'active' : ''}`}
+                                    onClick={() => handleChatClick(contact)}
+                                >
+                                    <div className="contact-name">{contact.name}</div>
+                                    <div className="contact-subtext">{contact.lastMessage}</div>
+                                </div>
+                            ))}
+                            <h4>Groups</h4>
+                            {groups.map((group) => (
+                                <div
+                                    key={group.id}
+                                    className={`contact-item ${selectedChat?.id === group.id ? 'active' : ''}`}
+                                    onClick={() => handleChatClick(group)}
+                                >
+                                    <div className="contact-name">{group.name}</div>
+                                </div>
+                            ))}
+=======
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
                     <div className="sidebar-header" onClick={handleProfileClick}>
                         <div className="user-avatar" />
                         <span className="username">{username}</span>
@@ -117,6 +219,10 @@ export function Chat() {
                             <div className="contact-name">{contact.name}</div>
                             <div className="contact-subtext">{contact.lastMessage}</div>
                             </div>
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 2f17b73 (First draft group chat implementation)
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
                         </div>
                         ))}
                     </div>
@@ -157,4 +263,8 @@ export function Chat() {
         </div>
         </>
     );
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> cb48218ac41d767147660daa85153e81ac95ccd4
