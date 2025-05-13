@@ -2,16 +2,11 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './NavigationBar.css';
-
 export default function NavigationBar() {
     const location = useLocation();
     const isActive = (path) => location.pathname === path;
     return (
         <nav className="navbar fixed-top navbar-expand-xl navbar-dark bg-dark">
-            <a className="navbar-brand" href="#">Chatter</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-
             <a className="navbar-brand" href="#">
                 <img src="src/assets/message-icon.png" className="chatter-logo" width="30" height="30" />
                 Chatter
