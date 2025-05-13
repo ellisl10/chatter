@@ -1,8 +1,8 @@
 #root {
-  overflow-x: hidden;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   text-align: center;
+  display: flex;
 }
 
 nav ul {
