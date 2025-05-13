@@ -148,7 +148,6 @@ export function Chat() {
                                     className={`contact-item ${selectedChat?.id === contact.id ? 'active' : ''}`}
                                     onClick={() => handleChatClick(contact)}
                                 >
-                                    <User className="contact-icon" />
                                     <div className="contact-name">{contact.name}</div>
                                     <div className="contact-subtext">{contact.lastMessage}</div>
                                 </div>
@@ -160,7 +159,6 @@ export function Chat() {
                                     className={`contact-item ${selectedChat?.id === group.id ? 'active' : ''}`}
                                     onClick={() => handleChatClick(group)}
                                 >
-                                    <Users className="contact-icon" />
                                     <div className="contact-name">{group.name}</div>
                                 </div>
                             ))}
