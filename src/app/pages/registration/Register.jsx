@@ -2,10 +2,12 @@ import * as formik from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
 import { useNavigate } from 'react-router'; // get rid of this later
+import MarginFix from '../../../components/MarginFix';
 
 
 export function Register() {
     const navigate = useNavigate();
+    MarginFix('decenter-mode');
 
     const onSubmit = () => {
         window.alert("Account created!")

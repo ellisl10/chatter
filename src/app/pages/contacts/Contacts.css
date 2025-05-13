@@ -4,3 +4,10 @@
     background-color: #f8f9fa;
     padding-top: 25px;
   }
+
+  body.decenter-mode #root {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}

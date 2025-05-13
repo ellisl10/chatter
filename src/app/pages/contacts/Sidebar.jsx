@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 import { BsGear, BsPerson, BsArrowLeft } from 'react-icons/bs';
+import MarginFix from '../../../components/MarginFix';
 
 const contacts = [
   { name: 'Joe Brown' },
@@ -24,6 +25,7 @@ export const Sidebar = () => {
   const filtered = contacts.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
+  MarginFix('decenter-mode');
 
   const grouped = groupByFirstLetter(filtered);
 

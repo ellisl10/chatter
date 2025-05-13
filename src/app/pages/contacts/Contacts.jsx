@@ -3,9 +3,11 @@ import { Sidebar } from './Sidebar.jsx';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Contacts.css';
+import MarginFix from '../../../components/MarginFix';
 
 
 export const Contacts = () => {
+  MarginFix('decenter-mode');
   return (
     <>
         <NavigationBar />
