@@ -4,7 +4,7 @@
     display: flex;
     width: 100vw;
     flex-direction: row;
-    padding-top: 40px;
+    padding-top: 15px;
     .sidebar-wrapper {
         max-width: 30%;
         background-color: #e9ecef;
@@ -13,7 +13,7 @@
         display: flex;
         flex-direction: column;
         position: fixed;
-        top: 40px;
+        top: 15px;
         bottom: 0;
         height: calc(100vh - 45px);
         left: 0;
