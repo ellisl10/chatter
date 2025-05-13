@@ -157,53 +157,30 @@ export function Chat() {
                             <div className="user-avatar" />
                             <span className="username">{username}</span>
                         </div>
-                        <button className="new-chat-button" onClick={handleNewChat}>New Chat</button>
 
-                        <div className="modal" style={{ display: showModal ? 'block' : 'none' }}>
-                            <h3>Select Contacts for Group Chat</h3>
+                        <div className="contact-list">
+                            <h4>Contacts</h4>
                             {contacts.map((contact) => (
-                                <div key={contact.id}>
-                                    <input
-                                        type="checkbox"
-                                        onChange={() => handleContactSelect(contact.id)}
-                                    />
+                                <div
+                                    key={contact.id}
+                                    className={`contact-item ${selectedChat?.id === contact.id ? 'active' : ''}`}
+                                    onClick={() => handleChatClick(contact)}
+                                >
                                     {contact.name}
                                 </div>
                             ))}
-                            <button onClick={handleCreateGroup}>Create Group</button>
-                            <button onClick={() => setShowModal(false)}>Cancel</button>
-                        </div>
-                    </aside>
-
-                    <main className="chat-main">
-                        <div className="chat-header">
-                            <div className="chat-username">{selectedChat?.name || 'Select a contact or group'}</div>
-                        </div>
-                        <div className="chat-messages">
-                            {messages.map((msg, idx) => (
+                            <h4>Groups</h4>
+                            {groups.map((group) => (
                                 <div
-                                    key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
-                                    className={`message ${msg.from === username ? 'outgoing' : 'incoming'}`}
+                                    key={group.id}
+                                    className={`contact-item ${selectedChat?.id === group.id ? 'active' : ''}`}
+                                    onClick={() => handleChatClick(group)}
                                 >
-                                    {msg.from !== username && <strong>{msg.from}: </strong>}
-                                    {msg.text}
-                                    <div className="message-timestamp">
-                                        {new Date(msg.timestamp).toLocaleTimeString()}
-                                    </div>
+                                    {group.name}
                                 </div>
                             ))}
                         </div>
-                        <div className="chat-input">
-                            <input
-                                type="text"
-                                placeholder="Type a message..."
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                            />
-                            <button className="send-button" onClick={handleSendMessage}>➤</button>
-                        </div>
-                    </main>
+                    </aside>
                 </div>
             </div>
         </div>
