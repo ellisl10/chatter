@@ -1,35 +1,26 @@
 import './App.css'
-import { Link } from "react-router";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import NavigationBar from './components/NavigationBar.jsx';
+import { BrowserRouter } from 'react-router'
+import { Routes, Route } from 'react-router'
+import { Home } from './app/pages/home/Home.jsx'
+import { Login } from './app/pages/login/login.jsx'
+import { Register } from './app/pages/registration/Register.jsx'
+import { Chat } from './app/pages/chat/chat.jsx'
+import { ContactsPage } from './app/pages/contacts/ContactsPage.jsx'
 
 function App() {
   return (
     <>
-      <NavigationBar />
-      <div>
-        <h1>Chatter</h1>
-      </div>
-      <nav>
-        {/* Add link to different pages here */}
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/register">Register</Link>
-          </li>
-          <li>
-            <Link to="/chat">Chat</Link>
-          </li>
-          <li>
-            <Link to="/contacts">Contacts</Link>
-          </li>
-        </ul>
-      </nav>
+      <BrowserRouter>
+        <Routes>
+          {/* When adding new pages, add import your page name at the top and then copy the route code pattern and add new page name below */}
+          <Route path="/" element={ <Home/> }/>
+          <Route path='login' element={<Login/>}/>
+          <Route path='register' element={<Register/>}/>
+          <Route path='chat' element={<Chat/>}/>
+          <Route path='contacts' element={<ContactsPage/>}/>
+        </Routes>
+      </BrowserRouter>,
     </>
   )
 }

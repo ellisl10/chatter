@@ -2,13 +2,6 @@ import React, { useState } from 'react';
 import './Sidebar.css';
 import { BsGear, BsPerson, BsArrowLeft } from 'react-icons/bs';
 
-const contacts = [
-  { name: 'Joe Brown' },
-  { name: 'John Doe' },
-  { name: 'Jane Doe' },
-  { name: 'Alice Smith' },
-];
-
 function groupByFirstLetter(data) {
   const grouped = {};
   data.forEach(({ name }) => {
@@ -19,16 +12,21 @@ function groupByFirstLetter(data) {
   return grouped;
 }
 
-export const Sidebar = () => {
+export const Sidebar = ({ contacts }) => {
   const [search, setSearch] = useState('');
+  const clearForm = () => {
+    setSearch('');
+  };
+
+  // Filter contacts based on search input
   const filtered = contacts.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    c.username.toLowerCase().includes(search.toLowerCase())
   );
 
   const grouped = groupByFirstLetter(filtered);
 
   return (
-    <div className='"sidebar d-flex flex-column p-3"'>
+    <div className='sidebar'>
       <div className="d-flex align-items-center justify-content-between mb-3">
         <BsArrowLeft size={20} />
         <div className="d-flex align-items-center gap-2">
@@ -46,7 +44,7 @@ export const Sidebar = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button className="btn btn-sm btn-outline-secondary">×</button>
+        <button className="btn btn-sm btn-outline-secondary" onClick={clearForm}>×</button>
       </div>
 
       <div className="contacts-list">

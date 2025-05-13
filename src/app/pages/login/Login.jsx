@@ -1,4 +1,5 @@
 import './Login.css'
+import { Button } from 'react-bootstrap';
 
 export function Login() {
 
@@ -8,7 +9,7 @@ export function Login() {
                 <div id='login-section'>
                     <div className="title-container">
                         <h1 id='Chatter'>Chatter</h1>
-                        <h1>Log In</h1>
+                        <h2>Log In</h2>
                     </div>
 
                     <div className="inputs">
@@ -29,7 +30,9 @@ export function Login() {
 
                     <div className="submit-container">
                         <div className="submit">
-                            <button>Sign In</button>
+                            <Button className="" variant="primary" size="lg" href="/chat">
+                                Sign in
+                            </Button>
                         </div>
                     </div>
                     <div className="forgot-password">Don't have an account yet? <span>Create an account!</span></div>
