@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NavigationBar } from '../../../components/NavigationBar';
 import { Sidebar } from './Sidebar.jsx';
 import { React, useState } from 'react';
@@ -66,3 +67,17 @@ export const Contacts = () => {
     </>
     );
 };
+=======
+import React from 'react';
+import NavigationBar from "../../../components/NavigationBar";
+
+export function Contacts() {
+    return (
+        <>
+        <NavigationBar />
+
+              <h1 style={{ textAlign: 'center', marginTop: 56 }}>Contacts Page</h1>
+        </>
+    )
+}
+>>>>>>> 0437d668862a260121de3e64f1db40c216588f86
