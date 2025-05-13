@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Chat.css';
 import NavigationBar from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
+import { User, Users } from 'lucide-react';
 
 const mockContacts = [
     { id: 1, name: 'John Doe', lastMessage: 'Last message' },
@@ -81,35 +82,19 @@ export function Chat() {
         setSelectedChat(chat);
     };
 
-    // Navigate to contacts
-    const handleViewAllClick = () => {
-        navigate('/contacts');
-    };
-
-    // Add a new contact
-    const handleAddContact = () => {
-        if (newContactName.trim()) {
-            const newContact = {
-                id: contacts.length + 1,
-                name: newContactName,
-                lastMessage: 'No messages yet'
-            };
-            setContacts(prev => [...prev, newContact]);
-            setNewContactName('');
-        }
-    };
-
     // Open new chat modal
     const handleNewChat = () => {
         setShowModal(true);
     };
 
+    // Contact selection logic
     const handleContactSelect = (contactId) => {
         setSelectedContacts((prev) =>
             prev.includes(contactId) ? prev.filter((id) => id !== contactId) : [...prev, contactId]
         );
     };
 
+    // Create a new group chat
     const handleCreateGroup = () => {
         if (selectedContacts.length > 1) {
             const newGroup = {
@@ -128,24 +113,6 @@ export function Chat() {
         }
     };
 
-    // Send a message in the current chat
-    const handleSendMessage = () => {
-        if (!newMessage.trim() || !selectedChat) return;
-
-        setMessagesByChat((prev) => {
-            const prevMessages = prev[selectedChat.id] || [];
-            return {
-                ...prev,
-                [selectedChat.id]: [
-                    ...prevMessages,
-                    { from: username, text: newMessage.trim(), timestamp: new Date().toISOString() }
-                ],
-            };
-        });
-
-        setNewMessage('');
-    };
-
     return (
         <>
         <NavigationBar />
@@ -157,6 +124,22 @@ export function Chat() {
                             <div className="user-avatar" />
                             <span className="username">{username}</span>
                         </div>
+                        <button className="new-chat-button" onClick={handleNewChat}>+ New Chat</button>
+
+                        <div className="modal" style={{ display: showModal ? 'block' : 'none' }}>
+                            <h3>Create Group Chat</h3>
+                            {contacts.map((contact) => (
+                                <div key={contact.id}>
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => handleContactSelect(contact.id)}
+                                    />
+                                    {contact.name}
+                                </div>
+                            ))}
+                            <button onClick={handleCreateGroup}>Create Group</button>
+                            <button onClick={() => setShowModal(false)}>Cancel</button>
+                        </div>
 
                         <div className="contact-list">
                             <h4>Contacts</h4>
@@ -166,7 +149,9 @@ export function Chat() {
                                     className={`contact-item ${selectedChat?.id === contact.id ? 'active' : ''}`}
                                     onClick={() => handleChatClick(contact)}
                                 >
-                                    {contact.name}
+                                    <User className="contact-icon" />
+                                    <div className="contact-name">{contact.name}</div>
+                                    <div className="contact-subtext">{contact.lastMessage}</div>
                                 </div>
                             ))}
                             <h4>Groups</h4>
@@ -176,7 +161,8 @@ export function Chat() {
                                     className={`contact-item ${selectedChat?.id === group.id ? 'active' : ''}`}
                                     onClick={() => handleChatClick(group)}
                                 >
-                                    {group.name}
+                                    <Users className="contact-icon" />
+                                    <div className="contact-name">{group.name}</div>
                                 </div>
                             ))}
                         </div>
