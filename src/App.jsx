@@ -20,7 +20,7 @@ function App() {
           <Route path='chat' element={<Chat/>}/>
           <Route path='contacts' element={<ContactsPage/>}/>
         </Routes>
-      </BrowserRouter>,
+      </BrowserRouter>
     </>
   )
 }

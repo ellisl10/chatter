@@ -32,7 +32,6 @@ export function Register() {
     });
 
     return (
-        <>
             <div className={styles.mainContainer}>
                 <div className={styles.regSection}>
                     <div className={styles.titleContainer}>
@@ -105,6 +104,5 @@ export function Register() {
                     <img src="src/assets/mockup-ss.png" alt="" className={styles.responsive} />
                 </div>
             </div>
-        </>
     )
 }

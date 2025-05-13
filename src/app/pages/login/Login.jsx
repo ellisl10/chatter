@@ -69,7 +69,6 @@ export function Login() {
                     </div>
                 </div>
 
-
                 {/* Fix gray area right of image on large screen sizes */}
                 {/* Add dropshadow on image */}
                 <div className={styles.graphicSection}>
