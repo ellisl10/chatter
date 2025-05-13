@@ -3,6 +3,7 @@
   padding: 0;
   text-align: center;
   display: flex;
+  overflow-x: hidden;
 }
 
 nav ul {
