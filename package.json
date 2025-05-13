@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "formik": "^2.4.6",
     "bootstrap": "^5.3.6",
+    "formik": "^2.4.6",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
