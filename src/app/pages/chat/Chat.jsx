@@ -54,6 +54,7 @@ export function Chat() {
     const [newMessage, setNewMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [selectedContacts, setSelectedContacts] = useState([]);
+    const [newContactName, setNewContactName] = useState('');
     MarginFix('chat-mode');
 
     const navigate = useNavigate();
@@ -85,24 +86,30 @@ export function Chat() {
         navigate('/contacts');
     };
 
-    // Open new chat modal
-    const handleNewChat = () => {
-        const existingIds = Object.keys(messagesByChat).map(Number);
-        const remainingContacts = contacts.filter(c => !existingIds.includes(c.id));
-        
-        if (remainingContacts.length > 0) {
-            const newContact = remainingContacts[0];
-            setMessagesByChat(prev => ({
-                ...prev,
-                [newContact.id]: [{ from: 'them', text: "Hello, let's chat!", timestamp: new Date().toISOString() }]
-            }));
-            setSelectedChat(newContact);
-        } else {
-            alert('All contacts are already in chats!');
+    // Add a new contact
+    const handleAddContact = () => {
+        if (newContactName.trim()) {
+            const newContact = {
+                id: contacts.length + 1,
+                name: newContactName,
+                lastMessage: 'No messages yet'
+            };
+            setContacts(prev => [...prev, newContact]);
+            setNewContactName('');
         }
     };
 
-    // Create a new group chat
+    // Open new chat modal
+    const handleNewChat = () => {
+        setShowModal(true);
+    };
+
+    const handleContactSelect = (contactId) => {
+        setSelectedContacts((prev) =>
+            prev.includes(contactId) ? prev.filter((id) => id !== contactId) : [...prev, contactId]
+        );
+    };
+
     const handleCreateGroup = () => {
         if (selectedContacts.length > 1) {
             const newGroup = {
@@ -151,23 +158,52 @@ export function Chat() {
                             <span className="username">{username}</span>
                         </div>
                         <button className="new-chat-button" onClick={handleNewChat}>New Chat</button>
-                        <div className="contact-list">
+
+                        <div className="modal" style={{ display: showModal ? 'block' : 'none' }}>
+                            <h3>Select Contacts for Group Chat</h3>
                             {contacts.map((contact) => (
+                                <div key={contact.id}>
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => handleContactSelect(contact.id)}
+                                    />
+                                    {contact.name}
+                                </div>
+                            ))}
+                            <button onClick={handleCreateGroup}>Create Group</button>
+                            <button onClick={() => setShowModal(false)}>Cancel</button>
+                        </div>
+                    </aside>
+
+                    <main className="chat-main">
+                        <div className="chat-header">
+                            <div className="chat-username">{selectedChat?.name || 'Select a contact or group'}</div>
+                        </div>
+                        <div className="chat-messages">
+                            {messages.map((msg, idx) => (
                                 <div
-                                    key={contact.id}
-                                    className={`contact-item ${selectedChat?.id === contact.id ? 'active' : ''}`}
-                                    onClick={() => handleChatClick(contact)}
+                                    key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
+                                    className={`message ${msg.from === username ? 'outgoing' : 'incoming'}`}
                                 >
-                                    <div className="contact-avatar" />
-                                    <div>
-                                        <div className="contact-name">{contact.name}</div>
-                                        <div className="contact-subtext">{contact.lastMessage}</div>
+                                    {msg.from !== username && <strong>{msg.from}: </strong>}
+                                    {msg.text}
+                                    <div className="message-timestamp">
+                                        {new Date(msg.timestamp).toLocaleTimeString()}
                                     </div>
                                 </div>
                             ))}
-                            <div className="view-all" onClick={handleViewAllClick}>View All</div>
                         </div>
-                    </aside>
+                        <div className="chat-input">
+                            <input
+                                type="text"
+                                placeholder="Type a message..."
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            />
+                            <button className="send-button" onClick={handleSendMessage}>➤</button>
+                        </div>
+                    </main>
                 </div>
             </div>
         </div>
