@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './Chat.css';
 import NavigationBar from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
-import { User, Users } from 'lucide-react';
 
 const mockContacts = [
     { id: 1, name: 'John Doe', lastMessage: 'Last message' },
