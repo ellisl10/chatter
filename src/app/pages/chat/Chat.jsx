@@ -124,33 +124,34 @@ export function Chat() {
                     </aside>
 
                     <main className="chat-main">
-                    <div className="chat-header">
-                        <div className="chat-username">{selectedContact?.name || 'Select a contact'}</div>
-                        <div className="chat-status">Online</div>
-                    </div>
-                    <div className="chat-messages">
-                        {messages.map((msg, idx) => (
-                        <div
-                            key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
-                            className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}
-                        >
-                            {msg.text}
-                            <div className="message-timestamp">
-                            {msg.timestamp && new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </div>
+                        <div className="chat-header">
+                            <div className="chat-username">{selectedContact?.name || 'Select a contact'}</div>
+                            <div className="chat-status">Online</div>
                         </div>
-                        ))}
-                    </div>
-                    <div className="chat-input">
-                        <input
-                        type="text"
-                        placeholder="Type a message..."
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                        />
-                        <button className="send-button" onClick={handleSendMessage}>➤</button>
-                    </div>
+                        <div className="chat-messages">
+                            {messages.map((msg, idx) => (
+                                <div
+                                    key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
+                                    className={`message ${msg.from === 'me' ? 'outgoing' : 'incoming'}`}
+                                >
+                                    {msg.from !== 'me' && <strong>{msg.from}: </strong>}
+                                    {msg.text}
+                                    <div className="message-timestamp">
+                                        {msg.timestamp && new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="chat-input">
+                            <input
+                                type="text"
+                                placeholder="Type a message..."
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            />
+                            <button className="send-button" onClick={handleSendMessage}>➤</button>
+                        </div>
                     </main>
                 </div>
             </div>
