@@ -22,7 +22,7 @@ function App() {
           <Route path='contacts' element={<ContactsPage/>}/>
           <Route path='settings' element={<Settings/>}/>
         </Routes>
-      </BrowserRouter>,
+      </BrowserRouter>
     </>
   )
 }

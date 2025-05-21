@@ -1,11 +1,12 @@
 import { Button, Navbar, Nav } from 'react-bootstrap';
 import { NavigationBar } from '../../../components/NavigationBar';
+import './Home.css';
 // import { useContext } from 'react';
 
 export const Home = () => {
     const isLoggedIn = true;
     return (
-        <div>
+        <div className="home-page">
             { isLoggedIn ? <NavigationBar/> : 
             <Navbar expand="lg" className="navbar bg-body-tertiary" fixed="top">
                 <Navbar.Brand href="/">
