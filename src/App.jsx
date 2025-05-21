@@ -5,8 +5,9 @@ import { Routes, Route } from 'react-router'
 import { Home } from './app/pages/home/Home.jsx'
 import { Login } from './app/pages/login/login.jsx'
 import { Register } from './app/pages/registration/Register.jsx'
-import { Chat } from './app/pages/chat/chat.jsx'
+import { Chat } from './app/pages/chat/Chat.jsx'
 import { ContactsPage } from './app/pages/contacts/ContactsPage.jsx'
+import { Settings } from './app/pages/settings/Settings.jsx'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path='register' element={<Register/>}/>
           <Route path='chat' element={<Chat/>}/>
           <Route path='contacts' element={<ContactsPage/>}/>
+          <Route path='settings' element={<Settings/>}/>
         </Routes>
       </BrowserRouter>,
     </>
