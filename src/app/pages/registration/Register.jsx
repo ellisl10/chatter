@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 import * as formik from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
 import { useNavigate } from 'react-router'; // get rid of this later
 
-=======
-import React from 'react';
-import NavigationBar from '../../../components/NavigationBar';
->>>>>>> 0437d668862a260121de3e64f1db40c216588f86
 
 export function Register() {
     const navigate = useNavigate();
@@ -38,7 +33,6 @@ export function Register() {
 
     return (
         <>
-<<<<<<< HEAD
             <div className={styles.mainContainer}>
                 <div className={styles.regSection}>
                     <div className={styles.titleContainer}>
@@ -111,11 +105,6 @@ export function Register() {
                     <img src="src/assets/mockup-ss.png" alt="" className={styles.responsive} />
                 </div>
             </div>
-=======
-        <NavigationBar />
-
-            <h1 style={{ textAlign: 'center', marginTop: 56 }}>Register Page</h1>        
->>>>>>> 0437d668862a260121de3e64f1db40c216588f86
         </>
     )
 }
