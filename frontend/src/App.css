@@ -1,0 +1,23 @@
+#root {
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  display: flex;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+  list-style-type: none;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #007bff;
+}

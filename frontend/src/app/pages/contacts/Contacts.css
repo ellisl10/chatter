@@ -1,0 +1,12 @@
+.search-wrapper {
+  width: 80%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.contacts{
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin-left: 300px;
+}
