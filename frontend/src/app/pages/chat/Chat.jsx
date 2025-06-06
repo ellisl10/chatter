@@ -16,24 +16,28 @@ export function Chat() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const storedUsername = localStorage.getItem('username') || 'User Name';
-        setUsername(storedUsername);
-        
-        fetch('/api/users')
-        .then((res) => res.json())
-        .then((data) => {
+        const fetchMessages = async () => {
+            try {
+            const res = await fetch('/api/messages');
+            const data = await res.json();
+            setMessages(data);
+            } catch (err) {
+            console.error('Error fetching messages', err);
+            }
+        };
+
+        const fetchContacts = async () => {
+            try {
+            const res = await fetch('/api/users');
+            const data = await res.json();
             setContacts(data);
-            setSelectedContact(data[0]);
-            setMessagesByContact(
-                data.reduce((acc, user) => {
-                    acc[user.id] =[];
-                    return acc;
-                }, {})
-            );
-        })
-        .catch((err) => {
-            console.error('Failed to load contacts:', err);
-        });
+            } catch (err) {
+            console.error('Error fetching contacts', err);
+            }
+        };
+
+        fetchMessages();
+        fetchContacts();
     }, []);
 
     const messages = selectedContact ? messagesByContact[selectedContact.id] || [] : [];
