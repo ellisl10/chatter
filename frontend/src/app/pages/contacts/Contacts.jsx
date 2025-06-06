@@ -6,15 +6,29 @@ import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
 
-export const Contacts = ({users}) => {
+export const Contacts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contacts, setContacts] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
-  const filteredUsernames = users.filter(
+  const filteredUsernames = allUsers.filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
       !contacts.some((contact) => contact.username === user.username)
   );
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/users');
+        const data = await res.json();
+        setAllUsers(data);
+      } catch (err) {
+        console.error("Failed to fetch users", err);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   return (
     <>
@@ -33,7 +47,7 @@ export const Contacts = ({users}) => {
           <ListGroup>
             {filteredUsernames.map((user) => (
               <ListGroup.Item key={user.username} className="d-flex justify-content-between align-items-center">
-                {user.name} ({user.username})
+                {user.name || user.username} ({user.username})
                 <Button
                   variant="outline-primary"
                   size="sm"
