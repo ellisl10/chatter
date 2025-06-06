@@ -1,40 +1,37 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
+import { auth } from '../../../firebase';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router'; // get rid of this later
 
 
 export function Register() {
     const navigate = useNavigate();
 
-    const onSubmit = async (values, { setSubmitting, resetForm }) => {
+    const onSubmit = async (values, actions) => {
         try {
-            const response = await fetch('/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: values.username,
-                email: values.email,
-            }),
-            });
+            // Creating user with firebase auth
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                values.email,
+                values.password
+            );
 
-            if (!response.ok) {
-            throw new Error('Failed to register user');
-            }
+            const user = userCredential.user;
+            console.log("registered user: ", user)
 
-            const user = await response.json();
-            console.log('User created:', user);
-            resetForm();
+            // Reset form after registration
+            actions.resetForm();
+
+            // Sign in the user
+            navigate("/chat");
+
             } catch (error) {
-                console.error('Error creating user:', error);
-            } finally {
-                setSubmitting(false);
-        }
+                console.error('Registration Error:', error);
+            }
     };
 
-    // I should lowkey just use react bootstrap and make it easier
     const schema = yup.object().shape({
         email: yup.string().email().required('Email is required'),
         username: yup.string().required('Username is required'),
