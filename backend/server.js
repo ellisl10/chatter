@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
+app.use('/api/messages', messageRoutes);
 
 app.listen(4000, () => {
   console.log('Backend running at http://localhost:4000');
