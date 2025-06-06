@@ -6,7 +6,7 @@ import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
 
-export const Contacts = () => {
+export const Contacts = ({users}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contacts, setContacts] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -18,17 +18,8 @@ export const Contacts = () => {
   );
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch('/api/users');
-        const data = await res.json();
-        setAllUsers(data);
-      } catch (err) {
-        console.error("Failed to fetch users", err);
-      }
-    };
-    fetchUsers();
-  }, []);
+    setAllUsers(users);
+  }, [users]);
 
   return (
     <>
