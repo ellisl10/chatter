@@ -1,4 +1,4 @@
-import * as formik from 'formik';
+import {useFormik} from 'formik';
 import * as yup from 'yup';
 import styles from './Login.module.css'
 import { useNavigate } from 'react-router'; // get rid of this later
@@ -8,9 +8,25 @@ export function Login() {
     const navigate = useNavigate();
 
 
-    const onSubmit = () => {
-        window.alert("Signing In...!")
-        navigate('/chat');
+    const onSubmit = async () => {
+        try {
+            const response = await fetch('/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            });
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+
+            const user = await response.json();
+            console.log('Logged in as:', user);
+            navigate('/chat');
+        } catch(err) {
+            console.error(err.message);
+        }
     }
 
     const schema = yup.object().shape({
@@ -18,7 +34,7 @@ export function Login() {
         password: yup.string().required().min(8, 'Password must be at least 8 characters'),
     })
 
-    const {values, errors, touched, handleBlur, handleChange, handleSubmit} = formik.useFormik({
+    const {values, errors, touched, handleBlur, handleChange, handleSubmit} = useFormik({
         initialValues: {
             username: "",
             password: "",
