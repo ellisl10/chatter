@@ -1,4 +1,4 @@
-import * as formik from 'formik';
+import { useFormik } from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
 import { useNavigate } from 'react-router'; // get rid of this later
@@ -7,9 +7,31 @@ import { useNavigate } from 'react-router'; // get rid of this later
 export function Register() {
     const navigate = useNavigate();
 
-    const onSubmit = () => {
-        window.alert("Account created!")
-        navigate('/chat');
+    const onSubmit = async (values, { setSubmitting, resetForm }) => {
+        try {
+            const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: values.username,
+                email: values.email,
+            }),
+            });
+
+            if (!response.ok) {
+            throw new Error('Failed to register user');
+            }
+
+            const user = await response.json();
+            console.log('User created:', user);
+            resetForm();
+            } catch (error) {
+                console.error('Error creating user:', error);
+            } finally {
+                setSubmitting(false);
+        }
     };
 
     // I should lowkey just use react bootstrap and make it easier
@@ -20,7 +42,7 @@ export function Register() {
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Please confirm password').
                         min(8, 'Password must be at least 8 characters')
     })
-    const {values, errors, touched, handleBlur, handleChange, handleSubmit}  = formik.useFormik({
+    const {values, errors, touched, handleBlur, handleChange, handleSubmit}  = useFormik({
         initialValues: {
             email: "",
             username: "",

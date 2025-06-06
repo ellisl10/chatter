@@ -4,31 +4,6 @@ import './Chat.css';
 import { NavigationBar } from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
 
-const mockContacts = [
-    { id: 1, name: 'John Doe', lastMessage: 'Last message' },
-    { id: 2, name: 'Jane Doe', lastMessage: 'Last message' },
-    { id: 3, name: 'Alice Smith', lastMessage: 'Last message' },
-    { id: 4, name: 'Joe Brown', lastMessage: 'Last message' },
-];
-
-const mockMessages = {
-    1: [
-        { from: 'them', text: 'Hey!', timestamp: new Date().toISOString() },
-        { from: 'me', text: 'Hello, John!', timestamp: new Date().toISOString() },
-    ],
-    2: [
-        { from: 'them', text: 'Are we still on for lunch?', timestamp: new Date().toISOString() },
-        { from: 'me', text: 'Yep, see you at noon.', timestamp: new Date().toISOString() },
-    ],
-    3: [
-        { from: 'them', text: 'Project update?', timestamp: new Date().toISOString() },
-        { from: 'me', text: 'Working on it today!', timestamp: new Date().toISOString() },
-    ],
-    4: [
-        { from: 'them', text: 'Can you send that file?', timestamp: new Date().toISOString() },
-        { from: 'me', text: 'Sent it this morning.', timestamp: new Date().toISOString() },
-    ],
-};
 
 export function Chat() {
     const [username, setUsername] = useState('');
@@ -43,9 +18,22 @@ export function Chat() {
     useEffect(() => {
         const storedUsername = localStorage.getItem('username') || 'User Name';
         setUsername(storedUsername);
-        setContacts(mockContacts);
-        setMessagesByContact(mockMessages);
-        setSelectedContact(mockContacts[0]);
+        
+        fetch('/api/users')
+        .then((res) => res.json())
+        .then((data) => {
+            setContacts(data);
+            setSelectedContact(data[0]);
+            setMessagesByContact(
+                data.reduce((acc, user) => {
+                    acc[user.id] =[];
+                    return acc;
+                }, {})
+            );
+        })
+        .catch((err) => {
+            console.error('Failed to load contacts:', err);
+        });
     }, []);
 
     const messages = selectedContact ? messagesByContact[selectedContact.id] || [] : [];
@@ -114,7 +102,7 @@ export function Chat() {
                         >
                             <div className="contact-avatar" />
                             <div>
-                            <div className="contact-name">{contact.name}</div>
+                            <div className="contact-name">{contact.username}</div>
                             <div className="contact-subtext">{contact.lastMessage}</div>
                             </div>
                         </div>
