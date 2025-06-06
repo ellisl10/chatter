@@ -4,12 +4,6 @@ import { Contacts } from './Contacts.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { NavigationBar } from '../../../components/NavigationBar.jsx';
 
-const mockContacts = [
-    { name: 'Joe Brown', username: 'joebrown' },
-    { name: 'John Doe', username: 'johndoe' },
-    { name: 'Jane Doe', username: 'janedoe' },
-    { name: 'Alice Smith', username: 'alicesmith' },
-  ];
 
 export const ContactsPage = () => {
     const [users, setUsers] = useState([]);
@@ -27,10 +21,10 @@ export const ContactsPage = () => {
                 <NavigationBar />
             </div>
             <div className="sidebar-wrapper">
-                <Sidebar contacts={mockContacts}/>
+                <Sidebar contacts={users}/>
             </div>
             <div className="contacts-wrapper">
-                <Contacts />
+                <Contacts users={users} />
             </div>
         </div>
     );
