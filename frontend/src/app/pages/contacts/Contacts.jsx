@@ -1,33 +1,18 @@
 import { NavigationBar } from '../../../components/NavigationBar.jsx';
 import { Sidebar } from './Sidebar.jsx';
-import { React, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
 
-const mockContacts = [
-  { name: 'Joe Brown', username: 'joebrown' },
-  { name: 'John Doe', username: 'johndoe' },
-  { name: 'Jane Doe', username: 'janedoe' },
-  { name: 'Alice Smith', username: 'alicesmith' },
-];
-
-export const Contacts = () => {
+export const Contacts = ({users}) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [contacts, setContacts] = useState(mockContacts);
+  const [contacts, setContacts] = useState([]);
 
-  const mockUsernames = [
-    { name: 'John Doe', username: 'johndoe' },
-    { name: 'Jane Smith', username: 'janesmith' },
-    { name: 'Alice Wonder', username: 'alice' },
-    { name: 'Bob Builder', username: 'bob' },
-    { name: 'Charlie Brown', username: 'charliebrown' },
-  ];
-
-  const filteredUsernames = mockUsernames.filter(
+  const filteredUsernames = users.filter(
     (user) =>
-      user.username.includes(searchTerm) &&
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
       !contacts.some((contact) => contact.username === user.username)
   );
 

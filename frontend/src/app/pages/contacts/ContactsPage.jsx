@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import './ContactsPage.css';
 import { Contacts } from './Contacts.jsx';
 import { Sidebar } from './Sidebar.jsx';
@@ -11,6 +12,15 @@ const mockContacts = [
   ];
 
 export const ContactsPage = () => {
+    const [users, setUsers] = useState([]);
+    
+    useEffect(() => {
+        fetch('/api/users')
+        .then(res => res.json())
+        .then(data => setUsers(data))
+        .catch(err => console.error('Failed to fetch users:', err));
+    }, []);
+
     return (
         <div className="main-wrapper">
             <div>
