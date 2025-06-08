@@ -1,10 +1,9 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
-import { auth } from '../../../firebase';
+import { auth, db } from '../../../firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router'; // get rid of this later
-const db = getFirestore();
 
 
 export function Register() {
