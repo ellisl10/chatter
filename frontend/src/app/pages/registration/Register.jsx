@@ -4,6 +4,7 @@ import styles from './Register.module.css'
 import { auth, db } from '../../../firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router'; // get rid of this later
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 
 export function Register() {
@@ -26,9 +27,9 @@ export function Register() {
 
             // Create user document in Firestore
             await setDoc(doc(db, "users", user.uid), {
-            username: values.username,
+            displayName: values.username,
             email: values.email,
-            createdAt: new Date()
+            createdAt: serverTimestamp(),
             });
 
             console.log("User registered and profile created:", user);
