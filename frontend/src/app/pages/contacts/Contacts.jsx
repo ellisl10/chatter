@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
 export const Contacts = ({users}) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +22,14 @@ export const Contacts = ({users}) => {
   useEffect(() => {
     setAllUsers(users);
   }, [users]);
+
+  const addContact = async (contactUid, conactData) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const contactRef = doc(db, "users", user.uid, "contacts", contactUid);
+    await setDoc(contactRef, conactData);
+  };
 
   return (
     <>
@@ -42,7 +52,11 @@ export const Contacts = ({users}) => {
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={() => setContacts([...contacts, user])}
+                  onClick={() => addContact(user.uid, {
+                    username: user.username,
+                    email: user.email,
+                    addedAt: serverTimestamp()
+                  })}
                 >
                   Add
                 </Button>
