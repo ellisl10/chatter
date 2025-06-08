@@ -6,7 +6,7 @@ import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { auth, db } from "../../../firebase";
 
 export const Contacts = ({users}) => {
   const [searchTerm, setSearchTerm] = useState('');
