@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
 import { auth, db } from '../../../firebase';
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router'; // get rid of this later
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 
@@ -40,6 +40,9 @@ export function Register() {
 
         } catch (error) {
             console.error("Registration Error:", error.message);
+            if (error.code === "auth/email-already-in-use") {
+            console.log("This email is already in use. Try logging in instead.");
+            }
         } finally {
             actions.setSubmitting(false);
         }

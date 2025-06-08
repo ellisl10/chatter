@@ -2,41 +2,46 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import styles from './Login.module.css'
 import { useNavigate } from 'react-router'; // get rid of this later
+import { auth } from '../../../firebase';
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 
 export function Login() {
     const navigate = useNavigate();
 
-
-    const onSubmit = async () => {
+    const onSubmit = async (values, actions) => {
         try {
-            const response = await fetch('/api/users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
+            // Creating user with firebase auth
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                values.email,
+                values.password
+            );
 
-            const user = await response.json();
-            console.log('Logged in as:', user);
-            navigate('/chat');
-        } catch(err) {
-            console.error(err.message);
-        }
+            const user = userCredential.user;
+            console.log("logged in user: ", user)
+
+            // Reset form after registration
+            actions.resetForm();
+
+            // Sign in the user
+            navigate("/chat");
+
+            } catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log("Error logging in: ", errorCode, errorMessage);
+            }
     }
 
     const schema = yup.object().shape({
-        username: yup.string().required(),
+        email: yup.string().required(),
         password: yup.string().required().min(8, 'Password must be at least 8 characters'),
     })
 
     const {values, errors, touched, handleBlur, handleChange, handleSubmit} = useFormik({
         initialValues: {
-            username: "",
+            email: "",
             password: "",
         },   
         validationSchema: schema,
@@ -57,13 +62,13 @@ export function Login() {
                         <form onSubmit={handleSubmit}>
                             <div className={styles.input}>
                                 <input 
-                                value={values.username}
+                                value={values.email}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                id="username" type="text" placeholder='Username' 
-                                className={errors.username && touched.username ? styles.inputError : " "}
+                                id="email" type="email" placeholder='Email' 
+                                className={errors.email && touched.email ? styles.inputError : " "}
                                 />
-                                {errors.username && touched.username && <p className={styles.error}>{errors.username}</p>}
+                                {errors.email && touched.email && <p className={styles.error}>{errors.email}</p>}
                             </div>
                             <div className={styles.input}>
                                 <input 
