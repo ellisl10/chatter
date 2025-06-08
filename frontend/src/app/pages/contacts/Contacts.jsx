@@ -15,8 +15,8 @@ export const Contacts = ({users}) => {
 
   const filteredUsernames = allUsers.filter(
     (user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !contacts.some((contact) => contact.username === user.username)
+      user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !contacts.some((contact) => contact.displayName === user.displayName)
   );
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export const Contacts = ({users}) => {
         <InputGroup className="mb-3">
           <Form.Control
             type="text"
-            placeholder="Enter a username"
+            placeholder="Enter an email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -72,8 +72,8 @@ export const Contacts = ({users}) => {
         {filteredUsernames.length > 0 ? (
           <ListGroup>
             {filteredUsernames.map((user) => (
-              <ListGroup.Item key={user.username} className="d-flex justify-content-between align-items-center">
-                {user.name || user.username} ({user.username})
+              <ListGroup.Item key={user.displayName} className="d-flex justify-content-between align-items-center">
+                {user.name || user.displayName} ({user.displayName})
                 <Button
                   variant="outline-primary"
                   size="sm"
