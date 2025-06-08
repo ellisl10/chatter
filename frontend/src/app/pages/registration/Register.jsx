@@ -2,8 +2,9 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import styles from './Register.module.css'
 import { auth } from '../../../firebase';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router'; // get rid of this later
+const db = getFirestore();
 
 
 export function Register() {
@@ -11,26 +12,37 @@ export function Register() {
 
     const onSubmit = async (values, actions) => {
         try {
-            // Creating user with firebase auth
+            // Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                values.email,
-                values.password
+            auth,
+            values.email,
+            values.password
             );
-
             const user = userCredential.user;
-            console.log("registered user: ", user)
 
-            // Reset form after registration
+            // Set displayName in Firebase Auth
+            await updateProfile(user, {
+            displayName: values.username,
+            });
+
+            // Create user document in Firestore
+            await setDoc(doc(db, "users", user.uid), {
+            username: values.username,
+            email: values.email,
+            createdAt: new Date()
+            });
+
+            console.log("User registered and profile created:", user);
+
             actions.resetForm();
-
-            // Sign in the user
             navigate("/chat");
 
-            } catch (error) {
-                console.error('Registration Error:', error);
-            }
-    };
+        } catch (error) {
+            console.error("Registration Error:", error.message);
+        } finally {
+            actions.setSubmitting(false);
+        }
+        };
 
     const schema = yup.object().shape({
         email: yup.string().email().required('Email is required'),
