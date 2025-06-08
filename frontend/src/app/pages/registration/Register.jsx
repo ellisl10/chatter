@@ -23,6 +23,7 @@ export function Register() {
             // Set displayName in Firebase Auth
             await updateProfile(user, {
             displayName: values.username,
+            username: values.username,
             });
 
             // Create user document in Firestore
