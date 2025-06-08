@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
+import { collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../../firebase";
 
 export const Contacts = ({users}) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,13 +15,46 @@ export const Contacts = ({users}) => {
 
   const filteredUsernames = allUsers.filter(
     (user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !contacts.some((contact) => contact.username === user.username)
+      user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !contacts.some((contact) => contact.displayName === user.displayName)
   );
 
   useEffect(() => {
     setAllUsers(users);
   }, [users]);
+
+  const handleAddContact = async () => {
+  if (!emailInput.trim()) return;
+
+  try {
+    const q = query(collection(db, "users"), where("email", "==", emailInput));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      alert("No user found with that email.");
+      return;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    const userId = userDoc.id;
+
+    // Add to current user's contacts subcollection
+    const currentUser = auth.currentUser;
+    await setDoc(doc(db, "users", currentUser.uid, "contacts", userId), {
+      uid: userId,
+      email: userData.email,
+      displayName: userData.displayName,
+      addedAt: new Date()
+    });
+
+    alert("Contact added!");
+
+  } catch (err) {
+    console.error("Error adding contact:", err);
+    alert("Failed to add contact.");
+  }
+};
 
   return (
     <>
@@ -28,7 +63,7 @@ export const Contacts = ({users}) => {
         <InputGroup className="mb-3">
           <Form.Control
             type="text"
-            placeholder="Enter a username"
+            placeholder="Enter an email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -37,12 +72,12 @@ export const Contacts = ({users}) => {
         {filteredUsernames.length > 0 ? (
           <ListGroup>
             {filteredUsernames.map((user) => (
-              <ListGroup.Item key={user.username} className="d-flex justify-content-between align-items-center">
-                {user.name || user.username} ({user.username})
+              <ListGroup.Item key={user.displayName} className="d-flex justify-content-between align-items-center">
+                {user.name || user.displayName} ({user.displayName})
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={() => setContacts([...contacts, user])}
+                  onClick={handleAddContact}
                 >
                   Add
                 </Button>
