@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
 
 export const Contacts = ({users}) => {
@@ -23,13 +23,38 @@ export const Contacts = ({users}) => {
     setAllUsers(users);
   }, [users]);
 
-  const addContact = async (contactUid, conactData) => {
-    const user = auth.currentUser;
-    if (!user) return;
+  const handleAddContact = async () => {
+  if (!emailInput.trim()) return;
 
-    const contactRef = doc(db, "users", user.uid, "contacts", contactUid);
-    await setDoc(contactRef, conactData);
-  };
+  try {
+    const q = query(collection(db, "users"), where("email", "==", emailInput));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      alert("No user found with that email.");
+      return;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    const userId = userDoc.id;
+
+    // Add to current user's contacts subcollection
+    const currentUser = auth.currentUser;
+    await setDoc(doc(db, "users", currentUser.uid, "contacts", userId), {
+      uid: userId,
+      email: userData.email,
+      displayName: userData.displayName,
+      addedAt: new Date()
+    });
+
+    alert("Contact added!");
+
+  } catch (err) {
+    console.error("Error adding contact:", err);
+    alert("Failed to add contact.");
+  }
+};
 
   return (
     <>
@@ -52,11 +77,7 @@ export const Contacts = ({users}) => {
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={() => addContact(user.uid, {
-                    username: user.username,
-                    email: user.email,
-                    addedAt: serverTimestamp()
-                  })}
+                  onClick={handleAddContact}
                 >
                   Add
                 </Button>
