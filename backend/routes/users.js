@@ -5,9 +5,16 @@ const router = express.Router();
 
 // Create a new user
 router.post('/', async (req, res) => {
-  const { username, email } = req.body;
+  const { username, email, displayName, photoURL, bio } = req.body;
   try {
-    const docRef = await db.collection('users').add({ username, email });
+    const docRef = await db.collection('users').add({
+      username,
+      email,
+      displayName: displayName || '',
+      photoURL: photoURL || '',
+      bio: bio || '',
+      createdAt: new Date()
+    });
     res.status(201).json({ id: docRef.id, username, email });
   } catch (error) {
     console.error('Error adding user:', error);
