@@ -5,36 +5,28 @@ import './Settings.css';
 export function AboutUs() {
     const sections = [
         {
+            id: 3,
+            image: '/images/drake-inf124.jpg',
+            title: 'Drake Smith',
+            objectPosition: '50% 20%' 
+        },
+        {
             id: 1,
-            image: 'https://via.placeholder.com/400x250?text=Image+1',
+            image: '/images/ellis-inf124.jpg',
             title: 'Ellis Liang',
-            description: 'Status...',
-            linkText: 'Learn More',
-            linkHref: '#!'
+            objectPosition: '50% 50%' 
+        },
+        {
+            id: 4,
+            image: '/images/daniel-inf124.jpg',
+            title: 'Daniel Nguyen Vo',
+            objectPosition: '50% 40%' 
         },
         {
             id: 2,
             image: '/images/edward-henriquez.jpg',
             title: 'Edward Henriquez',
-            description: 'Status...',
-            linkText: 'Learn More',
-            linkHref: '#!'
-        },
-        {
-            id: 3,
-            image: 'https://via.placeholder.com/400x250?text=Image+3',
-            title: 'Drake Smith',
-            description: 'Status...',
-            linkText: 'Learn More',
-            linkHref: '#!'
-        },
-        {
-            id: 4,
-            image: 'https://via.placeholder.com/400x250?text=Image+4',
-            title: 'Daniel Nguyen Vo',
-            description: 'Status...',
-            linkText: 'Learn More',
-            linkHref: '#!'
+            objectPosition: '50% 20%' 
         },
     ];
 
@@ -63,17 +55,20 @@ export function AboutUs() {
                     </aside>
 
                     <main className="settings-main about-us-main">
-                        <h1 className="about-us-title">THERE'S MORE TO OUR STORY</h1>
+                        <h1 className="about-us-title">Meet the Team</h1>
                         <div className="about-us-grid">
                             {sections.map(section => (
                                 <div key={section.id} className="about-us-card">
-                                    <img src={section.image} alt={section.title} className="about-us-card-image" />
+                                    <img 
+                                        src={section.image} 
+                                        alt={section.title} 
+                                        className="about-us-card-image" 
+                                        style={{ objectPosition: section.objectPosition }}
+                                    />
                                     <div className="about-us-card-content">
-                                        <h2 className="about-us-card-title">{section.title}</h2>
-                                        <p className="about-us-card-description">{section.description}</p>
-                                        <a href={section.linkHref} className="about-us-card-link">
-                                            {section.linkText}
-                                        </a>
+                                        <div className="about-us-card-link no-click">
+                                            {section.title}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
