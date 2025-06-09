@@ -44,7 +44,7 @@ export const Sidebar = () => {
 
   const clearForm = () => setSearch('');
 
-  const filtered = contacts.filter(c => c.displayName.toLowerCase().includes(search.toLowerCase()));
+  const filtered = contacts.filter(c => c.displayName?.toLowerCase().includes(search.toLowerCase()));
   const grouped = groupByFirstLetter(filtered);
 
   const handleContactClick = (contact) => {
