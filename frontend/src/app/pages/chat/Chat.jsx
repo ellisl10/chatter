@@ -4,10 +4,10 @@ import './Chat.css';
 import { NavigationBar } from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { db } from '../../../firebase';
-import { auth } from '../../../firebase';
+import { db, auth, storage } from '../../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, orderBy, onSnapshot, addDoc, getDocs } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function getChatId(uid1, uid2) {
     return [uid1, uid2].sort().join('_'); // consistent ID regardless of order
@@ -19,6 +19,55 @@ export function Chat() {
     const [showNewChatModal, setShowNewChatModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [allContacts, setAllContacts] = useState([]);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [isSendingImage, setIsSendingImage] = useState(false);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            alert("only image files are allowed.");
+            return;
+        }
+
+        setImageFile(file);
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreview(previewUrl);
+    };
+
+    const handleConfirmImageSend = async () => {
+        if(!imageFile || !selectedContact) return;
+
+        setIsSendingImage(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('image', imageFile);
+
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            const imageUrl = data.imageUrl;
+
+            await handleSendImageMessage(imageUrl);
+
+            cancelImagePreview();
+        } catch (err) {
+            console.error("Error sending image:", err);
+            alert("Failed to send image.");
+        } finally {
+            setIsSendingImage(false);
+        }
+    }
+
+    const cancelImagePreview = () => {
+        setImagePreview(null);
+        setImageFile(null);
+    }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -103,6 +152,19 @@ export function Chat() {
           if (unsubscribeChatListener) unsubscribeChatListener();
         };
       }, [unsubscribeChatListener]);
+      
+      const handleSendImageMessage = async (imageUrl) => {
+        if (!selectedContact || !auth.currentUser) return;
+        const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
+        const chatRef = collection(db, 'messages', chatId, 'messages');
+
+        await addDoc(chatRef, {
+            from: auth.currentUser.uid,
+            to: selectedContact.uid,
+            imageUrl,
+            timestamp: new Date()
+        });
+      };
 
       const handleSendMessage = async () => {
         console.log(selectedContact.uid);
@@ -181,10 +243,15 @@ export function Chat() {
                     <div className="chat-messages">
                         {messages.map((msg, idx) => (
                         <div
-                            key={`${msg.from}-${msg.text}-${msg.timestamp}-${idx}`}
+                            key={`${msg.from}-${msg.text || msg.imageUrl || ''}-${msg.timestamp}-${idx}`}
                             className={`message ${msg.from === auth.currentUser?.uid ? 'outgoing' : 'incoming'}`}
                         >
-                            {msg.text}
+                            {msg.imageUrl && (
+                            <img src={msg.imageUrl} alt="sent" className="sent-image" />
+                            )}
+                            {msg.text && (
+                            <div className="text-message">{msg.text}</div>
+                            )}
                             <div className="message-timestamp">
                             {msg.timestamp && new Date(msg.timestamp?.toDate?.() || msg.timestamp).toLocaleTimeString([], {
                                 hour: '2-digit',
@@ -194,6 +261,16 @@ export function Chat() {
                         </div>
                         ))}
                     </div>
+                    {imagePreview && (
+                        <div className="image-preview-container">
+                            <img src={imagePreview} alt="preview" className="image-preview" />
+                            <div className="preview-buttons">
+                                <button onClick={handleConfirmImageSend}
+                                disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
+                                <button onClick={cancelImagePreview}>Cancel</button>
+                            </div>
+                        </div>
+                    )}
                     <div className="chat-input">
                         <input
                         type="text"
@@ -201,6 +278,11 @@ export function Chat() {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
                         />
                         <button className="send-button" onClick={handleSendMessage}>➤</button>
                     </div>
