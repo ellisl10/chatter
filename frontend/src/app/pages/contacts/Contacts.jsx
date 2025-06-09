@@ -5,54 +5,59 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Contacts.css';
 import './Sidebar.css';
 import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-bootstrap';
-import { collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const Contacts = ({ users }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contacts, setContacts] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
-  const filteredUsernames = allUsers.filter(
-    (user) =>
-      user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !contacts.some((contact) => contact.displayName === user.displayName)
-  );
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    setAllUsers(users);
-  }, [users]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
 
-  const handleAddContact = async () => {
-    if (!searchTerm.trim()) {
-      alert("No user found with that email.");
-      return;
-    };
-
-    try {
-      const q = query(collection(db, "users"), where("email", "==", searchTerm));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        alert("No user found with that email.");
-        return;
+        const contactsRef = collection(db, "users", user.uid, "contacts");
+        onSnapshot(contactsRef, (snapshot) => {
+          const fetchedContacts = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setContacts(fetchedContacts);
+        });
       }
+    });
+  return () => unsubscribe();
+}, []);
 
-      const userDoc = querySnapshot.docs[0];
-      const userData = userDoc.data();
-      const userId = userDoc.id;
+useEffect(() => {
+  if (users?.length > 0) {
+    setAllUsers(users);
+  }
+}, [users]);
 
-      // Add to current user's contacts subcollection
-      const currentUser = auth.currentUser;
-      await setDoc(doc(db, "users", currentUser.uid, "contacts", userId), {
-        uid: userId,
-        email: userData.email,
-        display_name: userData.display_name,
+const filteredUsernames = allUsers.filter(
+  (user) =>
+    user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    user.id !== currentUser?.uid && // ✅ Don't show self
+    !contacts.some((contact) => contact.uid === user.id) // ✅ Don't show existing contacts
+);
+
+  const handleAddContact = async (userToAdd) => {
+    if (!currentUser || !userToAdd) return;
+  
+    try {
+      await setDoc(doc(db, "users", currentUser.uid, "contacts", userToAdd.id), {
+        uid: userToAdd.id,
+        email: userToAdd.email,
+        displayName: userToAdd.displayName || userToAdd.name,
         addedAt: new Date()
       });
-
       alert("Contact added!");
-
     } catch (err) {
       console.error("Error adding contact:", err);
       alert("Failed to add contact.");
@@ -66,23 +71,20 @@ export const Contacts = ({ users }) => {
         <InputGroup className="mb-3">
           <Form.Control
             type="text"
-            placeholder="Enter an email"
+            placeholder="Search by username"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="primary" onClick={handleAddContact}>
-            Send Request
-          </Button>
         </InputGroup>
         {filteredUsernames.length > 0 ? (
           <ListGroup>
             {filteredUsernames.map((user) => (
-              <ListGroup.Item key={user.displayName} className="d-flex justify-content-between align-items-center">
-                {user.name || user.displayName} ({user.displayName})
+              <ListGroup.Item key={user.username} className="d-flex justify-content-between align-items-center">
+                {user.displayName} | {user.username}
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={handleAddContact}
+                  onClick={() => handleAddContact(user)}
                 >
                   Add
                 </Button>

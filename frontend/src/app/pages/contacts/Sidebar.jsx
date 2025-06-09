@@ -1,42 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Sidebar.css';
-import { BsGear, BsPerson, BsArrowLeft } from 'react-icons/bs';
+import { BsPerson } from 'react-icons/bs';
 import { Modal, Button } from 'react-bootstrap';
+import { auth, db } from '../../../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 function groupByFirstLetter(data) {
   const grouped = {};
   data.forEach((contact) => {
-    const letter = contact.name[0].toUpperCase();
+    const letter = contact.displayName[0].toUpperCase();
     if (!grouped[letter]) grouped[letter] = [];
-    grouped[letter].push(contact); // Push the full contact object
+    grouped[letter].push(contact);
   });
   return grouped;
 }
 
-export const Sidebar = ({ contacts }) => {
+export const Sidebar = () => {
+  const [contacts, setContacts] = useState([]);
+  const [displayName, setDisplayName] = useState(null);
   const [search, setSearch] = useState('');
-  const [selectedContact, setSelectedContact] = useState(null); // State for selected contact
-  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const clearForm = () => {
-    setSearch('');
-  };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setDisplayName(user.displayName || "Anonymous");
+        const contactsRef = collection(db, "users", user.uid, "contacts");
+        const unsubContacts = onSnapshot(contactsRef, (snapshot) => {
+          const contactList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setContacts(contactList);
+        });
+        return unsubContacts;
+      } else {
+        setContacts([]);
+        setDisplayName(null);
+      }
+    });
 
-  // Filter contacts based on search input
-  const filtered = contacts.filter(c =>
-    c.username.toLowerCase().includes(search.toLowerCase())
-  );
+    return () => unsubscribe();
+  }, []);
 
+  const clearForm = () => setSearch('');
+
+  const filtered = contacts.filter(c => c.displayName.toLowerCase().includes(search.toLowerCase()));
   const grouped = groupByFirstLetter(filtered);
 
   const handleContactClick = (contact) => {
-    setSelectedContact(contact); // Set the selected contact
-    setShowModal(true); // Show the modal
+    setSelectedContact(contact);
+    setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Close the modal
-    setSelectedContact(null); // Clear the selected contact
+    setShowModal(false);
+    setSelectedContact(null);
   };
 
   return (
@@ -44,7 +62,7 @@ export const Sidebar = ({ contacts }) => {
       <div className="d-flex align-items-center justify-content-between mb-3">
         <div className="d-flex align-items-center gap-2">
           <BsPerson />
-          <strong>User Name</strong>
+          <strong>{displayName}</strong>
         </div>
       </div>
 
@@ -65,39 +83,33 @@ export const Sidebar = ({ contacts }) => {
             <div className="fw-bold text-muted small py-1">{letter}</div>
             {grouped[letter].map(contact => (
               <div
-                key={contact.username}
+                key={contact.uid}
                 className="contact-entry d-flex align-items-center py-2 border-top"
-                onClick={() => handleContactClick(contact)} // Handle contact click
+                onClick={() => handleContactClick(contact)}
                 style={{ cursor: 'pointer' }}
               >
                 <div className="avatar bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
                   <BsPerson />
                 </div>
-                <span>{contact.name}</span>
+                <span>{contact.displayName}</span>
               </div>
             ))}
           </div>
         ))}
       </div>
 
-      {/* Modal for contact details */}
       {selectedContact && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
             <Modal.Title>Contact Information</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>Name:</strong> {selectedContact.name}</p>
-            <p><strong>Username:</strong> {selectedContact.username}</p>
+            <p><strong>Name:</strong> {selectedContact.displayName}</p>
+            <p><strong>Email:</strong> {selectedContact.email}</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => window.location.href = `/chat`} // Navigate to chat page `/chat/${selectedContact.username}`
-            >
+            <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+            <Button variant="primary" onClick={() => window.location.href = `/chat`}>
               Message
             </Button>
           </Modal.Footer>
