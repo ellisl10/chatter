@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
+
 function getChatId(uid1, uid2) {
     return [uid1, uid2].sort().join('_'); // consistent ID regardless of order
 }
@@ -27,6 +28,7 @@ export function Chat() {
     const [showGroupModal, setShowGroupModal] = useState(false);
     const [groupName, setGroupName] = useState('');
     const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -403,7 +405,9 @@ export function Chat() {
                                 hour: '2-digit',
                                 minute: '2-digit'
                             })}
+
                             </div>
+                            ))}
                         </div>
                         ))}
                     </div>
@@ -432,6 +436,7 @@ export function Chat() {
                         />
                         <button className="send-button" onClick={handleSendMessage}>➤</button>
                     </div>
+
                     </main>
                 </div>
             </div>

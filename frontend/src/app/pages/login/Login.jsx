@@ -1,13 +1,15 @@
+import React, { useState } from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import styles from './Login.module.css'
-import { useNavigate } from 'react-router'; // get rid of this later
+import { useNavigate } from 'react-router';
 import { auth } from '../../../firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 
 export function Login() {
     const navigate = useNavigate();
+    const [loginError, setLoginError] = useState('');
 
     const onSubmit = async (values, actions) => {
         try {
@@ -31,11 +33,24 @@ export function Login() {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log("Error logging in: ", errorCode, errorMessage);
+
+                let message = "A login error occured. Please try again.";
+
+                switch (errorCode) {
+                    case "auth/invalid-credential":
+                        message = "Invalid email or password. Please try again."
+                        break;
+                    case "auth/too-many-requests":
+                        message = "Too many requests. Please try again later."
+                    default:
+                        message = "Login failed. Please try again."
+                }
+                setLoginError(message);
             }
-    }
+        }
 
     const schema = yup.object().shape({
-        email: yup.string().required(),
+        email: yup.string().email().required(),
         password: yup.string().required().min(8, 'Password must be at least 8 characters'),
     })
 
@@ -57,7 +72,6 @@ export function Login() {
                         <h1>Log In</h1>
                     </div>
 
-                    {/* Need to add form validation */}
                     <div className={styles.formWrapper}>
                         <form onSubmit={handleSubmit}>
                             <div className={styles.input}>
@@ -80,6 +94,7 @@ export function Login() {
                                 />
                                 {errors.password && touched.password && <p className={styles.error}>{errors.password}</p>}
                             </div>
+                            {loginError && <p className={styles.error}>{loginError}</p>}
                             <div className={styles.submitContainer}>
                                 <button className={styles.submitButton} type="submit">Log In</button>
                             </div>
@@ -90,9 +105,6 @@ export function Login() {
                     </div>
                 </div>
 
-
-                {/* Fix gray area right of image on large screen sizes */}
-                {/* Add dropshadow on image */}
                 <div className={styles.graphicSection}>
                     <img src="src/assets/mockup-ss.png" alt="" className={styles.responsive}/>
                 </div>
