@@ -6,7 +6,7 @@ import MarginFix from '../../../components/MarginFix';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { db, auth, storage } from '../../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, orderBy, onSnapshot, addDoc, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function getChatId(uid1, uid2) {
@@ -68,6 +68,19 @@ export function Chat() {
         setImagePreview(null);
         setImageFile(null);
     }
+
+    const ensureContactExists = async (currentUid, contactUid, contactData) => {
+        const contactRef = doc(db, "users", currentUid, "contacts", contactUid);
+        const docSnap = await getDoc(contactRef);
+        if (!docSnap.exists()) {
+            await setDoc(contactRef, {
+            displayName: contactData.displayName || "",
+            email: contactData.email || "",
+            username: contactData.username || "",
+            createdAt: new Date(),
+            });
+        }
+    };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -157,7 +170,14 @@ export function Chat() {
         if (!selectedContact || !auth.currentUser) return;
         const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
         const chatRef = collection(db, 'messages', chatId, 'messages');
-
+        
+        await ensureContactExists(auth.currentUser.uid, selectedContact.uid, selectedContact);
+        await ensureContactExists(selectedContact.uid, auth.currentUser.uid, {
+            displayName: auth.currentUser.displayName,
+            email: auth.currentUser.email,
+            username: auth.currentUser.displayName,
+        });
+        
         await addDoc(chatRef, {
             from: auth.currentUser.uid,
             to: selectedContact.uid,
@@ -172,7 +192,14 @@ export function Chat() {
       
         const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
         const chatRef = collection(db, 'messages', chatId, 'messages');
-      
+        
+        await ensureContactExists(auth.currentUser.uid, selectedContact.uid, selectedContact);
+        await ensureContactExists(selectedContact.uid, auth.currentUser.uid, {
+            displayName: auth.currentUser.displayName,
+            email: auth.currentUser.email,
+            username: auth.currentUser.displayName,
+        });
+
         await addDoc(chatRef, {
           from: auth.currentUser.uid,
           to: selectedContact.uid,
