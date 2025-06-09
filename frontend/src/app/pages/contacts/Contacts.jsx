@@ -43,8 +43,8 @@ useEffect(() => {
 const filteredUsernames = allUsers.filter(
   (user) =>
     user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    user.id !== currentUser?.uid && // ✅ Don't show self
-    !contacts.some((contact) => contact.uid === user.id) // ✅ Don't show existing contacts
+    user.id !== currentUser?.uid &&
+    !contacts.some((contact) => contact.uid === user.id)
 );
 
   const handleAddContact = async (userToAdd) => {
@@ -76,11 +76,13 @@ const filteredUsernames = allUsers.filter(
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </InputGroup>
+
+        {/* Display all users by their displaynames list */}
         {filteredUsernames.length > 0 ? (
           <ListGroup>
             {filteredUsernames.map((user) => (
               <ListGroup.Item key={user.username} className="d-flex justify-content-between align-items-center">
-                {user.displayName} | {user.username}
+                @{user.displayName}
                 <Button
                   variant="outline-primary"
                   size="sm"
