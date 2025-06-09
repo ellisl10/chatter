@@ -4,10 +4,9 @@ import './Chat.css';
 import { NavigationBar } from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { db, auth, storage } from '../../../firebase';
+import { db, auth } from '../../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function getChatId(uid1, uid2) {
     return [uid1, uid2].sort().join('_'); // consistent ID regardless of order
@@ -263,56 +262,65 @@ export function Chat() {
                     </aside>
 
                     <main className="chat-main">
-                    <div className="chat-header">
-                        <div className="chat-username">{selectedContact?.displayName || 'Select a contact'}</div>
-                        <div className="chat-status">Online</div>
-                    </div>
-                    <div className="chat-messages">
-                        {messages.map((msg, idx) => (
-                        <div
-                            key={`${msg.from}-${msg.text || msg.imageUrl || ''}-${msg.timestamp}-${idx}`}
-                            className={`message ${msg.from === auth.currentUser?.uid ? 'outgoing' : 'incoming'}`}
-                        >
-                            {msg.imageUrl && (
-                            <img src={msg.imageUrl} alt="sent" className="sent-image" />
-                            )}
-                            {msg.text && (
-                            <div className="text-message">{msg.text}</div>
-                            )}
-                            <div className="message-timestamp">
-                            {msg.timestamp && new Date(msg.timestamp?.toDate?.() || msg.timestamp).toLocaleTimeString([], {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}
-                            </div>
+                    {selectedContact && (
+                        <>
+                        <div className="chat-header">
+                            <div className="chat-username">{selectedContact.displayName}</div>
+                            <div className="chat-status">Online</div>
                         </div>
-                        ))}
-                    </div>
-                    {imagePreview && (
-                        <div className="image-preview-container">
-                            <img src={imagePreview} alt="preview" className="image-preview" />
-                            <div className="preview-buttons">
-                                <button onClick={handleConfirmImageSend}
-                                disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
-                                <button onClick={cancelImagePreview}>Cancel</button>
+                        <div className="chat-messages">
+                            {messages.map((msg, idx) => (
+                            <div
+                                key={`${msg.from}-${msg.text || msg.imageUrl || ''}-${msg.timestamp}-${idx}`}
+                                className={`message ${msg.from === auth.currentUser?.uid ? 'outgoing' : 'incoming'}`}
+                            >
+                                {msg.imageUrl && (
+                                <img src={msg.imageUrl} alt="sent" className="sent-image" />
+                                )}
+                                {msg.text && (
+                                <div className="text-message">{msg.text}</div>
+                                )}
+                                <div className="message-timestamp">
+                                {msg.timestamp && new Date(msg.timestamp?.toDate?.() || msg.timestamp).toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                                </div>
                             </div>
+                            ))}
+                        </div>
+                        {imagePreview && (
+                            <div className="image-preview-container">
+                                <img src={imagePreview} alt="preview" className="image-preview" />
+                                <div className="preview-buttons">
+                                    <button onClick={handleConfirmImageSend}
+                                    disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
+                                    <button onClick={cancelImagePreview}>Cancel</button>
+                                </div>
+                            </div>
+                        )}
+                        <div className="chat-input">
+                            <input
+                            type="text"
+                            placeholder="Type a message..."
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                            />
+                            <button className="send-button" onClick={handleSendMessage}>➤</button>
+                        </div>
+                        </>
+                    )}
+                    {!selectedContact && (
+                        <div className="no-contact-selected">
+                            <p>Please select a contact to start chatting.</p>
                         </div>
                     )}
-                    <div className="chat-input">
-                        <input
-                        type="text"
-                        placeholder="Type a message..."
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                        />
-                        <button className="send-button" onClick={handleSendMessage}>➤</button>
-                    </div>
                     </main>
                 </div>
             </div>
