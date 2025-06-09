@@ -4,7 +4,7 @@ import styles from './Register.module.css'
 import { auth, db } from '../../../firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router'; // get rid of this later
-import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { setDoc, doc, serverTimestamp, query, collection, where, getDocs } from 'firebase/firestore';
 
 
 export function Register() {
@@ -12,6 +12,18 @@ export function Register() {
 
     const onSubmit = async (values, actions) => {
         try {
+            // check that username is unique
+            const usernameQuery = query(
+                collection(db, "users"),
+                where("username", "==", values.username)
+              );
+              const usernameSnapshot = await getDocs(usernameQuery);
+          
+              if (!usernameSnapshot.empty) {
+                alert("Username already taken. Please choose another.");
+                actions.setSubmitting(false);
+                return;
+              }
             // Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(
             auth,
@@ -31,6 +43,7 @@ export function Register() {
             displayName: values.username,
             email: values.email,
             createdAt: serverTimestamp(),
+            username: values.username,
             });
 
             console.log("User registered and profile created:", user);

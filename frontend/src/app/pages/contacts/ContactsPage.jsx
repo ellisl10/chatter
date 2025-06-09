@@ -1,31 +1,40 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './ContactsPage.css';
 import { Contacts } from './Contacts.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { NavigationBar } from '../../../components/NavigationBar.jsx';
-
+import { db } from '../../../firebase.js';
+import { collection, getDocs } from 'firebase/firestore';
 
 export const ContactsPage = () => {
-    const [users, setUsers] = useState([]);
-    
-    useEffect(() => {
-        fetch('/api/users')
-        .then(res => res.json())
-        .then(data => setUsers(data))
-        .catch(err => console.error('Failed to fetch users:', err));
-    }, []);
+  const [users, setUsers] = useState([]);
 
-    return (
-        <div className="main-wrapper">
-            <div>
-                <NavigationBar />
-            </div>
-            <div className="sidebar-wrapper">
-                <Sidebar contacts={users}/>
-            </div>
-            <div className="contacts-wrapper">
-                <Contacts users={users} />
-            </div>
-        </div>
-    );
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        const usersArray = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(usersArray);
+      } catch (err) {
+        console.error('Error fetching users:', err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  return (
+    <div className="main-wrapper">
+      <NavigationBar />
+      <div className="sidebar-wrapper">
+        <Sidebar />
+      </div>
+      <div className="contacts-wrapper">
+        <Contacts users={users} />
+      </div>
+    </div>
+  );
 };
