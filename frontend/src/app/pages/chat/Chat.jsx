@@ -4,9 +4,9 @@ import './Chat.css';
 import { NavigationBar } from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { db, auth, storage } from '../../../firebase';
+import { db, auth } from '../../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function getChatId(uid1, uid2) {
@@ -22,6 +22,11 @@ export function Chat() {
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [isSendingImage, setIsSendingImage] = useState(false);
+    const [groups, setGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState(null);
+    const [showGroupModal, setShowGroupModal] = useState(false);
+    const [groupName, setGroupName] = useState('');
+    const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -64,6 +69,23 @@ export function Chat() {
         }
     }
 
+    const handleGroupClick = (group) => {
+        if (unsubscribeChatListener) unsubscribeChatListener();
+
+        setSelectedContact(null);
+        setSelectedGroup(group);
+
+        const groupRef = collection(db, "groups", group.id, "messages");
+        const q = query(groupRef, orderBy("timestamp"));
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const msgs = snapshot.docs.map(doc => doc.data());
+            setMessages(msgs);
+        });
+
+        setUnsubscribeChatListener(() => unsubscribe);
+    };
+
     const cancelImagePreview = () => {
         setImagePreview(null);
         setImageFile(null);
@@ -92,6 +114,22 @@ export function Chat() {
         });
 
         return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        if(!auth.currentUser) return;
+
+        const groupsRef = collection(db, "groups");
+        const q = query(groupsRef, where("members", "array-contains", auth.currentUser.uid));
+        const unsubscribeGroups = onSnapshot(q, (snapshot) => {
+            const groupList = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setGroups(groupList);
+        });
+
+        return () => unsubscribeGroups();
     }, []);
 
     useEffect(() => {
@@ -160,6 +198,23 @@ export function Chat() {
         setUnsubscribeChatListener(() => unsubscribe);
       };
 
+      const handleCreateGroup = async () => {
+        if (!groupName.trim() || selectedGroupMembers.length === 0) return;
+        try {
+            await addDoc(collection(db, "groups"), {
+            name: groupName.trim(),
+            members: [...selectedGroupMembers, auth.currentUser.uid],
+            createdAt: new Date()
+            });
+            setShowGroupModal(false);
+            setGroupName('');
+            setSelectedGroupMembers([]);
+        } catch (err) {
+            console.error("Error creating group:", err);
+            alert("Failed to create group.");
+        }
+      };
+
       useEffect(() => {
         return () => {
           if (unsubscribeChatListener) unsubscribeChatListener();
@@ -167,48 +222,72 @@ export function Chat() {
       }, [unsubscribeChatListener]);
       
       const handleSendImageMessage = async (imageUrl) => {
-        if (!selectedContact || !auth.currentUser) return;
-        const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
-        const chatRef = collection(db, 'messages', chatId, 'messages');
-        
-        await ensureContactExists(auth.currentUser.uid, selectedContact.uid, selectedContact);
-        await ensureContactExists(selectedContact.uid, auth.currentUser.uid, {
-            displayName: auth.currentUser.displayName,
-            email: auth.currentUser.email,
-            username: auth.currentUser.displayName,
-        });
-        
-        await addDoc(chatRef, {
-            from: auth.currentUser.uid,
-            to: selectedContact.uid,
-            imageUrl,
-            timestamp: new Date()
-        });
+        if (!auth.currentUser) return;
+
+        if (selectedGroup) {
+            const chatRef = collection(db, 'groups', selectedGroup.id, 'messages');
+            await addDoc(chatRef, {
+                from: auth.currentUser.uid,
+                imageUrl,
+                timestamp: new Date()
+            });
+        } else if (selectedContact) {
+            const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
+            const chatRef = collection(db, 'messages', chatId, 'messages');
+
+            await ensureContactExists(auth.currentUser.uid, selectedContact.uid, selectedContact);
+            await ensureContactExists(selectedContact.uid, auth.currentUser.uid, {
+                displayName: auth.currentUser.displayName,
+                email: auth.currentUser.email,
+                username: auth.currentUser.displayName,
+            });
+
+            await addDoc(chatRef, {
+                from: auth.currentUser.uid,
+                senderName: auth.currentUser.displayName || "Unknown",
+                imageUrl,
+                timestamp: new Date()
+            });
+        }
       };
 
       const handleSendMessage = async () => {
-        console.log(selectedContact.uid);
-        if (!newMessage.trim() || !selectedContact || !auth.currentUser) return;
-      
-        const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
-        const chatRef = collection(db, 'messages', chatId, 'messages');
-        
-        await ensureContactExists(auth.currentUser.uid, selectedContact.uid, selectedContact);
-        await ensureContactExists(selectedContact.uid, auth.currentUser.uid, {
-            displayName: auth.currentUser.displayName,
-            email: auth.currentUser.email,
-            username: auth.currentUser.displayName,
-        });
+        if (!newMessage.trim() || !auth.currentUser) return;
 
-        await addDoc(chatRef, {
-          from: auth.currentUser.uid,
-          to: selectedContact.uid,
-          text: newMessage.trim(),
-          timestamp: new Date()
-        });
-      
+        let chatRef;
+
+        if (selectedGroup) {
+            // Group chat case
+            const groupId = selectedGroup.id;
+            chatRef = collection(db, 'groups', groupId, 'messages');
+
+            await addDoc(chatRef, {
+                from: auth.currentUser.uid,
+                text: newMessage.trim(),
+                timestamp: new Date()
+            });
+        } else if (selectedContact) {
+            // One-on-one chat case
+            const chatId = getChatId(auth.currentUser.uid, selectedContact.uid);
+            chatRef = collection(db, 'messages', chatId, 'messages');
+
+            await ensureContactExists(auth.currentUser.uid, selectedContact.uid, selectedContact);
+            await ensureContactExists(selectedContact.uid, auth.currentUser.uid, {
+                displayName: auth.currentUser.displayName,
+                email: auth.currentUser.email,
+                username: auth.currentUser.displayName,
+            });
+
+            await addDoc(chatRef, {
+                from: auth.currentUser.uid,
+                senderName: auth.currentUser.displayName || "Unknown",
+                text: newMessage.trim(),
+                timestamp: new Date()
+            });
+        }
+
         setNewMessage('');
-      };
+    };
 
     const handleNewChat = async () => {
         setShowNewChatModal(true);
@@ -228,6 +307,23 @@ export function Chat() {
         setAllContacts(usersList);
     };
 
+    const handleNewGroup = async () => {
+        setShowGroupModal(true);
+        const snapshot = await getDocs(collection(db, 'users'));
+        const usersList = snapshot.docs
+            .map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                uid: data.uid || doc.id,
+                displayName: data.displayName || 'Unnamed',
+                ...data
+            };
+            })
+            .filter(user => user.uid !== auth.currentUser?.uid);
+        setAllContacts(usersList);
+        };
+
     const handleViewAllClick = () => {
         navigate('/contacts');
     };
@@ -244,35 +340,55 @@ export function Chat() {
                         <span className="username">{displayName || "Loading..."}</span>
                     </div>
                     <button className="new-chat-button" onClick={handleNewChat}>New Chat</button>
+                    <button className="new-chat-button" onClick={handleNewGroup}>New Group</button>
                     <div className="contact-list">
-                        {contacts.map((contact) => (
-                        <div
-                            key={contact.id}
-                            className={`contact-item ${selectedContact?.id === contact.id ? 'active' : ''}`}
-                            onClick={() => handleContactClick(contact)}
-                        >
-                            <div className="contact-avatar" />
-                            <div>
-                            <div className="contact-name">{contact.username}</div>
-                            <div className="contact-subtext">{contact.lastMessage}</div>
+                        {[...groups, ...contacts].map((item) => {
+                            const isGroup = item.members !== undefined; // simple way to detect groups
+                            const isActive = selectedGroup?.id === item.id || selectedContact?.id === item.id;
+
+                            return (
+                            <div
+                                key={item.id}
+                                className={`contact-item ${isActive ? 'active' : ''}`}
+                                onClick={() => {
+                                if (isGroup) handleGroupClick(item);
+                                else handleContactClick(item);
+                                }}
+                            >
+                                <div className={`contact-avatar ${isGroup ? 'group' : ''}`} />
+                                <div>
+                                <div className="contact-name">
+                                    {isGroup ? item.name : item.username}
+                                </div>
+                                <div className="contact-subtext">
+                                    {isGroup ? 'Group chat' : item.lastMessage || ''}
+                                </div>
+                                </div>
                             </div>
+                            );
+                        })}
                         </div>
-                        ))}
-                    </div>
                     <div className="view-all" onClick={handleViewAllClick}>View All</div>
                     </aside>
 
                     <main className="chat-main">
                     <div className="chat-header">
-                        <div className="chat-username">{selectedContact?.displayName || 'Select a contact'}</div>
+                        <div className="chat-username">
+                            {selectedGroup?.name || selectedContact?.displayName || 'Select a chat'}
+                        </div>
                         <div className="chat-status">Online</div>
                     </div>
                     <div className="chat-messages">
-                        {messages.map((msg, idx) => (
+                        {[...messages]
+                        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                        .map((msg, idx) => (
                         <div
                             key={`${msg.from}-${msg.text || msg.imageUrl || ''}-${msg.timestamp}-${idx}`}
                             className={`message ${msg.from === auth.currentUser?.uid ? 'outgoing' : 'incoming'}`}
                         >
+                            {selectedGroup && msg.senderName && (
+                            <div className="sender-name">{msg.senderName}</div>
+                            )}
                             {msg.imageUrl && (
                             <img src={msg.imageUrl} alt="sent" className="sent-image" />
                             )}
@@ -355,6 +471,51 @@ export function Chat() {
         </Modal.Body>
         <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowNewChatModal(false)}>Close</Button>
+        </Modal.Footer>
+        </Modal>
+        <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)}>
+        <Modal.Header closeButton>
+            <Modal.Title>Create New Group</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form.Group className="mb-3">
+            <Form.Label>Group Name</Form.Label>
+            <Form.Control
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                placeholder="Enter a group name"
+            />
+            </Form.Group>
+            <Form.Label>Select Members</Form.Label>
+            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            {allContacts.map(user => (
+                <Form.Check
+                key={user.uid}
+                type="checkbox"
+                label={user.displayName}
+                checked={selectedGroupMembers.includes(user.uid)}
+                onChange={() => {
+                    setSelectedGroupMembers(prev => {
+                    if (prev.includes(user.uid)) {
+                        return prev.filter(id => id !== user.uid);
+                    } else {
+                        return [...prev, user.uid];
+                    }
+                    });
+                }}
+                />
+            ))}
+            </div>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowGroupModal(false)}>Cancel</Button>
+            <Button
+            variant="primary"
+            disabled={!groupName.trim() || selectedGroupMembers.length === 0}
+            onClick={handleCreateGroup}>
+            Create Group
+            </Button>
         </Modal.Footer>
         </Modal>
         </>

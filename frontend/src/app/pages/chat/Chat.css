@@ -79,6 +79,13 @@ body.chat-mode #root {
     word-wrap: break-word;
 }
 
+.sender-name {
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+  color: #444;
+}
+
 .image-preview-container {
     display: flex;
     flex-direction: column;
@@ -302,6 +309,11 @@ body.chat-mode #root {
 .contact-item.active {
     background-color: #e0e0e0;
     border-radius: 10px;
+}
+
+.contact-avatar.group {
+  background-color: #888;
+  border-radius: 10%;
 }
 
 @media (max-width: 480px) {
