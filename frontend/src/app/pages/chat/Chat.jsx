@@ -3,19 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import './Chat.css';
 import { NavigationBar } from '../../../components/NavigationBar';
 import MarginFix from '../../../components/MarginFix';
-
+import { auth } from '../../../firebase';
+import { onAuthStateChanged } from "firebase/auth";
 
 export function Chat() {
-    const [username, setUsername] = useState('');
+    const [displayName, setDisplayName] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+            setDisplayName(user.displayName || "Anonymous");
+            } else {
+            setDisplayName(null); // user signed out
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
     const [contacts, setContacts] = useState([]);
     const [selectedContact, setSelectedContact] = useState(null);
     const [messagesByContact, setMessagesByContact] = useState({});
     const [newMessage, setNewMessage] = useState('');
+    const [loading, setLoading] = useState(true);
     MarginFix('chat-mode');
 
     const navigate = useNavigate();
-
-    useEffect(() => {
+    
+    
+    /** useEffect(() => {
         const fetchMessages = async () => {
             try {
             const res = await fetch('/api/messages');
@@ -39,6 +54,7 @@ export function Chat() {
         fetchMessages();
         fetchContacts();
     }, []);
+    **/
 
     const messages = selectedContact ? messagesByContact[selectedContact.id] || [] : [];
 
@@ -85,7 +101,6 @@ export function Chat() {
     };
 
     return (
-        
         <>
         <NavigationBar />
         <div className="chat-page-wrapper">
@@ -94,7 +109,7 @@ export function Chat() {
                     <aside className="sidebar">
                     <div className="sidebar-header" onClick={handleProfileClick}>
                         <div className="user-avatar" />
-                        <span className="username">{username}</span>
+                        <span className="username">{displayName || "Loading..."}</span>
                     </div>
                     <button className="new-chat-button" onClick={handleNewChat}>New Chat</button>
                     <div className="contact-list">
