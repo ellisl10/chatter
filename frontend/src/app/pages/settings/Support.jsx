@@ -59,18 +59,8 @@ export function Support() {
                     </aside>
 
                     <main className="settings-main support-main">
-                        <div className="support-search-container">
-                            <input
-                                type="text"
-                                className="support-search-input"
-                                placeholder="What can we help you with?"
-                            />
-                            
-                            <button className="support-search-submit-btn">
-                                <IoSend />
-                            </button>
-                        </div>
-
+                        <h1 className="about-us-title">Frequently Asked Questions</h1>
+                        
                         <div className="faq-section">
                             {faqs.map(faq => (
                                 <div key={faq.id} className="faq-item">

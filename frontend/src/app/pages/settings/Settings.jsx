@@ -50,6 +50,7 @@ export function Settings() {
           </aside>
 
           <main className="settings-main">
+            <h1 className="about-us-title" style={{ marginBottom: '2rem' }}>Edit Profile</h1>
             <div className="settings-header">
               <div className="settings-avatar">👤</div>
               <h1 className="settings-username">User Name</h1>
