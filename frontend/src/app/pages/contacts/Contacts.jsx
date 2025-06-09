@@ -8,7 +8,7 @@ import { Container, Row, Col, Form, Button, ListGroup, InputGroup } from 'react-
 import { collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
 
-export const Contacts = ({users}) => {
+export const Contacts = ({ users }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contacts, setContacts] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -24,37 +24,40 @@ export const Contacts = ({users}) => {
   }, [users]);
 
   const handleAddContact = async () => {
-  if (!emailInput.trim()) return;
-
-  try {
-    const q = query(collection(db, "users"), where("email", "==", emailInput));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
+    if (!searchTerm.trim()) {
       alert("No user found with that email.");
       return;
+    };
+
+    try {
+      const q = query(collection(db, "users"), where("email", "==", searchTerm));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        alert("No user found with that email.");
+        return;
+      }
+
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      const userId = userDoc.id;
+
+      // Add to current user's contacts subcollection
+      const currentUser = auth.currentUser;
+      await setDoc(doc(db, "users", currentUser.uid, "contacts", userId), {
+        uid: userId,
+        email: userData.email,
+        display_name: userData.display_name,
+        addedAt: new Date()
+      });
+
+      alert("Contact added!");
+
+    } catch (err) {
+      console.error("Error adding contact:", err);
+      alert("Failed to add contact.");
     }
-
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
-    const userId = userDoc.id;
-
-    // Add to current user's contacts subcollection
-    const currentUser = auth.currentUser;
-    await setDoc(doc(db, "users", currentUser.uid, "contacts", userId), {
-      uid: userId,
-      email: userData.email,
-      displayName: userData.displayName,
-      addedAt: new Date()
-    });
-
-    alert("Contact added!");
-
-  } catch (err) {
-    console.error("Error adding contact:", err);
-    alert("Failed to add contact.");
-  }
-};
+  };
 
   return (
     <>
@@ -67,7 +70,9 @@ export const Contacts = ({users}) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="primary">Send Request</Button>
+          <Button variant="primary" onClick={handleAddContact}>
+            Send Request
+          </Button>
         </InputGroup>
         {filteredUsernames.length > 0 ? (
           <ListGroup>
@@ -87,7 +92,7 @@ export const Contacts = ({users}) => {
         ) : (
           <p className="text-muted text-center">No users found.</p>
         )}
-    </div>
+      </div>
     </>
-    );
+  );
 };
