@@ -8,6 +8,9 @@ import { Register } from './app/pages/registration/Register.jsx'
 import { Chat } from './app/pages/chat/Chat.jsx'
 import { ContactsPage } from './app/pages/contacts/ContactsPage.jsx'
 import { Settings } from './app/pages/settings/Settings.jsx'
+import { AboutUs } from './app/pages/settings/AboutUs.jsx'
+import { Support } from './app/pages/settings/Support.jsx'
+import { LogOut } from './app/pages/logout/LogOut.jsx'
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path='chat' element={<Chat/>}/>
           <Route path='contacts' element={<ContactsPage/>}/>
           <Route path='settings' element={<Settings/>}/>
+          <Route path='about-us' element={<AboutUs/>}/>
+          <Route path='support' element={<Support/>}/>
+          <Route path='logout' element={<LogOut/>}/>
         </Routes>
       </BrowserRouter>
     </>
