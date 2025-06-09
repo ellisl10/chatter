@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "cloudinary": "^1.41.3",
+    "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -19,5 +19,6 @@
     "firebase-admin": "^13.4.0",
     "multer": "^2.0.1",
     "multer-storage-cloudinary": "^4.0.0"
+
   }
 }
