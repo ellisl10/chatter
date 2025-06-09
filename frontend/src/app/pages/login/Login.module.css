@@ -71,6 +71,7 @@ input {
     height: 5vh !important;
     border-radius: 10px;
     border: 2px solid #C6C5C5;
+    color: black;
 }
 
 .submitContainer {

@@ -66,7 +66,7 @@ export function Login() {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 id="email" type="email" placeholder='Email' 
-                                className={errors.email && touched.email ? styles.inputError : " "}
+                                className={`${errors.email && touched.email ? styles.inputError : ""}`}
                                 />
                                 {errors.email && touched.email && <p className={styles.error}>{errors.email}</p>}
                             </div>
@@ -76,7 +76,7 @@ export function Login() {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 id="password" type="password" placeholder="Password" 
-                                className={errors.password && touched.password ? styles.inputError : " "} 
+                                className={`${errors.password && touched.password ? styles.inputError : ""}`} 
                                 />
                                 {errors.password && touched.password && <p className={styles.error}>{errors.password}</p>}
                             </div>
