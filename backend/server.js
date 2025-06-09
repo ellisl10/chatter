@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/users.js';
 import messageRoutes from './routes/messages.js';
+import uploadRoute from './routes/upload.js';
+import uploadRouter from './routes/upload.js'
 
 dotenv.config();
 
@@ -12,7 +14,8 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
-
+app.use(uploadRoute);
+app.use('/api/upload', uploadRouter);
 app.listen(4000, () => {
   console.log('Backend running at http://localhost:4000');
 });
