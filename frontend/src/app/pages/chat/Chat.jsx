@@ -184,7 +184,8 @@ export function Chat() {
         if (unsubscribeChatListener) {
           unsubscribeChatListener();
         }
-      
+        
+        setSelectedGroup(null);
         setSelectedContact(contact);
         const chatId = getChatId(auth.currentUser.uid, contact.uid);
         const chatRef = collection(db, 'messages', chatId, 'messages');
@@ -228,6 +229,7 @@ export function Chat() {
             const chatRef = collection(db, 'groups', selectedGroup.id, 'messages');
             await addDoc(chatRef, {
                 from: auth.currentUser.uid,
+                senderName: auth.currentUser.displayName || "Unknown",
                 imageUrl,
                 timestamp: new Date()
             });
@@ -263,6 +265,7 @@ export function Chat() {
 
             await addDoc(chatRef, {
                 from: auth.currentUser.uid,
+                senderName: auth.currentUser.displayName || "Unknown",
                 text: newMessage.trim(),
                 timestamp: new Date()
             });
