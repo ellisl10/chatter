@@ -1,16 +1,15 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
+import { Routes, Route } from 'react-router'
 import { Home } from './app/pages/home/Home.jsx'
 import { Login } from './app/pages/login/Login.jsx'
 import { Register } from './app/pages/registration/Register.jsx'
 import { Chat } from './app/pages/chat/Chat.jsx'
 import { ContactsPage } from './app/pages/contacts/ContactsPage.jsx'
 import { Settings } from './app/pages/settings/Settings.jsx'
-import { MyAccount } from './app/pages/settings/MyAccount.jsx'
-import { Privacy } from './app/pages/settings/Privacy.jsx'
-import { AboutUs } from './app/pages/settings/AboutUs.jsx'
-import { EditMyAccount } from './app/pages/settings/EditMyAccount.jsx'
+import { AboutUs } from './app/pages/settings/AboutUs.jsx';
+import { Support } from './app/pages/settings/Support.jsx';
 import MessageToasts from './components/MessageToasts';
 
 function App() {
@@ -24,12 +23,9 @@ function App() {
           <Route path='register' element={<Register/>}/>
           <Route path='chat' element={<Chat/>}/>
           <Route path='contacts' element={<ContactsPage/>}/>
-          <Route path='settings' element={<Settings/>}>
-            <Route index element={<MyAccount />} />
-            <Route path='privacy' element={<Privacy />} />
-            <Route path='about-us' element={<AboutUs />} />
-            <Route path='my-account/edit' element={<EditMyAccount />} />
-          </Route>
+          <Route path='settings' element={<Settings/>}/>
+          <Route path='about-us' element={<AboutUs/>}/>
+          <Route path='support' element={<Support/>}/>
         </Routes>
         <MessageToasts />
       </BrowserRouter>

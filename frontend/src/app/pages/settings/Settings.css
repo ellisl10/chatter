@@ -3,11 +3,14 @@
   height: calc(100vh - 56px);
   overflow: hidden;
   font-family: Arial, sans-serif;
+  width: 100%;
+  max-width: 100%;
 }
 
 .settings-container {
   display: flex;
   height: 100%;
+  width: 100%;
 }
 
 .settings-sidebar {
@@ -71,8 +74,20 @@
   right: 1rem;
   font-size: 1.5rem;
   border: none;
-  background: transparent;
+  background: black;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.settings-close:hover {
+  background-color: #333;
 }
 
 .settings-header {
@@ -143,85 +158,289 @@
   box-sizing: border-box;
 }
 
-/* Styles for the Edit Account Pop-up */
-.edit-account-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+.edit-form {
+  padding: 1rem 0;
 }
 
-.popup-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 500px;
-}
-
-.popup-content h2 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  text-align: center;
-}
-
-.popup-content .detail-row {
-  display: flex;
-  flex-direction: column;
+.edit-form .form-group {
   margin-bottom: 1rem;
 }
 
-.popup-content .detail-row label {
-  font-weight: bold;
+.edit-form label {
+  display: block;
   margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
 }
 
-.popup-content .detail-row input {
+.edit-form .form-control {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-  box-sizing: border-box;
+  background-color: #fff;
+  color: #333;
 }
 
-.popup-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
+.edit-form .form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.popup-actions button {
-  padding: 0.75rem 1.5rem;
+.settings-edit {
+  margin-left: auto;
+  background: none;
   border: none;
-  border-radius: 4px;
+  color: #007bff;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
-.cancel-button {
-  background: #dc3545;
+.settings-edit:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 1.5rem;
+  color: #333;
+}
+
+.modal-header .btn-close {
+  color: #333;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #eee;
+  padding: 1rem 1.5rem;
+}
+
+.modal-footer .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
   color: #fff;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
 }
 
-.save-button {
-  background: #28a745;
-  color: #fff;
+.modal-footer .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 
-.edit-my-account-container {
+.modal-footer .btn-secondary {
+  background-color: #e0e0e0;
+  border-color: #e0e0e0;
+  color: #333;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #d0d0d0;
+  border-color: #d0d0d0;
+  color: #000;
+}
+
+/* Support Page specific styles */
+.support-main {
+  padding: 2rem;
+  background: #fff;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.support-search-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100%; /* Take full height of the parent settings-main */
+  background-color: #f0f0f0;
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.support-search-input {
+  flex-grow: 1;
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  outline: none;
+}
+
+.support-search-input::placeholder {
+  color: #666;
+}
+
+.support-search-voice-btn,
+.support-search-submit-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+  transition: color 0.2s;
+}
+
+.support-search-submit-btn {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 10px;
+  font-size: 1.35rem;
+}
+
+.support-search-submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.support-search-voice-btn:hover {
+  color: #333;
+}
+
+.faq-section {
+  margin-top: 1.5rem;
+}
+
+.faq-item {
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.faq-question {
+  width: 100%;
+  background-color: #f8f8f8;
+  color: #333;
+  padding: 1rem 1.5rem;
+  border: none;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.faq-question:hover {
+  background-color: #eee;
+}
+
+.faq-toggle-icon {
+  font-size: 1.2rem;
+  margin-left: 1rem;
+}
+
+.faq-answer {
+  padding: 0 1.5rem 1.5rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* About Us Page specific styles */
+.about-us-main {
+  padding: 2rem;
+}
+
+.about-us-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.about-us-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.about-us-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.about-us-card:hover {
+  transform: translateY(-5px);
+}
+
+.about-us-card-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.about-us-card-content {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.about-us-card-link {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+}
+
+.about-us-card-link:hover {
+  color: #007bff;
+}
+
+.about-us-card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.about-us-card-role {
+  font-size: 1.1rem;
+  color: #007bff;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.about-us-card-description {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.no-click {
+  pointer-events: none;
 }
