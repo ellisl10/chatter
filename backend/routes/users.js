@@ -33,4 +33,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Update a user by ID
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { displayName, username, email } = req.body;
+  try {
+    // In a real application, you would verify the user's identity here
+    // For now, we are directly updating based on ID received from frontend
+    const userRef = db.collection('users').doc(id);
+    await userRef.update({
+      displayName,
+      username,
+      email,
+      updatedAt: new Date()
+    });
+    res.status(200).json({ message: 'User updated successfully' });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
 export default router;

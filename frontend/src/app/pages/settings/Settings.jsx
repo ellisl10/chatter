@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationBar } from '../../../components/NavigationBar';
 import { Button } from './EditButton';
 import './Settings.css';
@@ -6,11 +6,36 @@ import { Modal } from 'react-bootstrap';
 
 export function Settings() {
   const [showEditModal, setShowEditModal] = useState(false);
+  const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
-    displayName: 'Your Name',
-    username: 'username',
-    email: 'youremail@gmail.com'
+    displayName: '',
+    username: '',
+    email: ''
   });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const users = await response.json();
+        if (users.length > 0) {
+          const user = users[0];
+          setUserId(user.id);
+          setFormData({
+            displayName: user.displayName || '',
+            username: user.username || '',
+            email: user.email || ''
+          });
+        }
+      } catch (error) {
+        console.error("Could not fetch user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,9 +45,29 @@ export function Settings() {
     }));
   };
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    setShowEditModal(false);
+  const handleSave = async () => {
+    if (!userId) {
+      console.error("User ID is not available. Cannot save changes.");
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:4000/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log('User updated successfully');
+      setShowEditModal(false);
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    }
   };
 
   return (
@@ -53,7 +98,7 @@ export function Settings() {
             <h1 className="about-us-title" style={{ marginBottom: '2rem' }}>Edit Profile</h1>
             <div className="settings-header">
               <div className="settings-avatar">👤</div>
-              <h1 className="settings-username">User Name</h1>
+              <h1 className="settings-username">{formData.username}</h1>
               <button 
                 className="settings-edit"
                 onClick={() => setShowEditModal(true)}
