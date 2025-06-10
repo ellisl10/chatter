@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import functions from 'firebase-functions';
-
 import userRoutes from './routes/users.js';
 import messageRoutes from './routes/messages.js';
 import uploadRoute from './routes/upload.js';
