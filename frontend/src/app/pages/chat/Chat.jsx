@@ -53,7 +53,7 @@ export function Chat() {
             const formData = new FormData();
             formData.append('image', imageFile);
 
-            const res = await fetch('/api/upload', {
+            const res = await fetch('https://us-central1-chatter-24302.cloudfunctions.net/api/upload', {
                 method: 'POST',
                 body: formData
             });
