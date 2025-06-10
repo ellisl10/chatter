@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import './Chat.css';
 import { NavigationBar } from '../../../components/NavigationBar';
@@ -31,6 +31,11 @@ export function Chat() {
     const [showGroupModal, setShowGroupModal] = useState(false);
     const [groupName, setGroupName] = useState('');
     const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+    const messagesEndRef = useRef(null);
+    const [contacts, setContacts] = useState([]);
+    const [selectedContact, setSelectedContact] = useState(null);
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
 
     const deleteMessage = async (msg) => {
         try {
@@ -49,6 +54,11 @@ export function Chat() {
             alert('Failed to delete message')
         }
     };
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, [messages]);
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -194,13 +204,6 @@ export function Chat() {
 
         fetchChats();
     }, [displayName]);
-
-    const [contacts, setContacts] = useState([]);
-    const [selectedContact, setSelectedContact] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState('');
-
-    const navigate = useNavigate();
 
     const handleProfileClick = () => {
         navigate('/Settings');
@@ -357,6 +360,10 @@ export function Chat() {
     const handleViewAllClick = () => {
         navigate('/contacts');
     };
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, [messages]);
 
     return (
         <>
@@ -524,6 +531,20 @@ export function Chat() {
                     <Form.Group className="mb-3">
                         <Form.Label>Group Name</Form.Label>
                         <Form.Control
+                            <div ref={messagesEndRef} />
+                        </div>
+                        {imagePreview && (
+                            <div className="image-preview-container">
+                                <img src={imagePreview} alt="preview" className="image-preview" />
+                                <div className="preview-buttons">
+                                    <button onClick={handleConfirmImageSend}
+                                    disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
+                                    <button onClick={cancelImagePreview}>Cancel</button>
+                                </div>
+                            </div>
+                        )}
+                        <div className="chat-input">
+                            <input
                             type="text"
                             value={groupName}
                             onChange={(e) => setGroupName(e.target.value)}
