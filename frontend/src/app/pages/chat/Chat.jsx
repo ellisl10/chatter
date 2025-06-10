@@ -81,21 +81,21 @@ export function Chat() {
 
         try {
             const formData = new FormData();
-            formData.append('image', imageFile);
+            formData.append("file", imageFile);
+            formData.append("upload_preset", "chatter_preset"); // Replace with your Cloudinary unsigned preset name
+            formData.append("cloud_name", "dgxmwuy9k"); // Replace with your Cloudinary cloud name
 
-            const res = await fetch(`${API_BASE_URL}/upload`, {
-            method: 'POST',
-            body: formData, // do NOT set headers
+            const res = await fetch("https://api.cloudinary.com/v1_1/dgxmwuy9k/image/upload", {
+                method: "POST",
+                body: formData
             });
 
             if (!res.ok) {
-            const text = await res.text(); // helpful for debugging
-            console.error("Raw server response:", text);
-            throw new Error(`Upload failed: ${res.status}`);
+                throw new Error("Image upload failed");
             }
 
-            const data = await res.json(); // only parse JSON if response is OK
-            const imageUrl = data.imageUrl;
+            const data = await res.json();
+            const imageUrl = data.secure_url;
 
             await handleSendImageMessage(imageUrl);
             cancelImagePreview();
