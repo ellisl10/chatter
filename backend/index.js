@@ -1,32 +1,17 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import express from 'express';
+import cors from 'cors';
+import functions from 'firebase-functions';
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
-
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-const functions = require("firebase-functions");
-const express = require("express");
-const cors = require("cors");
+import userRoutes from './routes/users.js';
+import messageRoutes from './routes/messages.js';
+import uploadRoute from './routes/upload.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/hello", (req, res) => {
-  res.send("Hello from Firebase Functions!");
-});
+app.use('/api/users', userRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/upload', uploadRoute);
 
-exports.api = functions.https.onRequest(app);
+export const api = functions.https.onRequest(app);
