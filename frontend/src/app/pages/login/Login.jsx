@@ -41,9 +41,10 @@ export function Login() {
                         message = "Invalid email or password. Please try again."
                         break;
                     case "auth/too-many-requests":
-                        message = "Too many requests. Please try again later."
+                        message = "Too many requests. Please try again later.";
+                        break;
                     default:
-                        message = "Login failed. Please try again."
+                        message = "Login failed. Please try again.";
                 }
                 setLoginError(message);
             }
