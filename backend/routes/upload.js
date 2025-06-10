@@ -3,12 +3,16 @@ import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 
+const cloudinaryName = process.env.CLOUDINARY_NAME;
+const cloudinaryKey = process.env.CLOUDINARY_KEY;
+const cloudinarySecret = process.env.CLOUDINARY_SECRET;
+
 dotenv.config();
 
 cloudinary.config({
-  cloud_name: 'dslkkcdnw',
-  api_key:    '779326328141677',
-  api_secret: 'YJC9uk0xN10vtb1_Lr_8CNI7nos'
+  cloud_name: cloudinaryName,
+  api_key:    cloudinaryKey,
+  api_secret: cloudinarySecret
 });
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -19,7 +23,7 @@ router.get('/test', (req, res) => {
   res.json({ ok: true });
 });
 
-router.post('/upload', upload.single('image'), async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   console.log("🟢 Upload route hit");
 
   if (!req.file) {
