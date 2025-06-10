@@ -8,6 +8,7 @@ import { Register } from './app/pages/registration/Register.jsx'
 import { Chat } from './app/pages/chat/Chat.jsx'
 import { ContactsPage } from './app/pages/contacts/ContactsPage.jsx'
 import { Settings } from './app/pages/settings/Settings.jsx'
+import MessageToasts from './components/MessageToasts';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='contacts' element={<ContactsPage/>}/>
           <Route path='settings' element={<Settings/>}/>
         </Routes>
+        <MessageToasts />
       </BrowserRouter>
     </>
   )
