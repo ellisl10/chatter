@@ -81,14 +81,21 @@ export function Chat() {
 
         try {
             const formData = new FormData();
-            formData.append('image', imageFile);
+            formData.append("file", imageFile);
+            formData.append("upload_preset", "chatter_preset"); // Replace with your Cloudinary unsigned preset name
+            formData.append("cloud_name", "dgxmwuy9k"); // Replace with your Cloudinary cloud name
 
-            const res = await fetch(`${API_BASE_URL}/upload`, {
-                method: 'POST',
+            const res = await fetch("https://api.cloudinary.com/v1_1/dgxmwuy9k/image/upload", {
+                method: "POST",
                 body: formData
             });
+
+            if (!res.ok) {
+                throw new Error("Image upload failed");
+            }
+
             const data = await res.json();
-            const imageUrl = data.imageUrl;
+            const imageUrl = data.secure_url;
 
             await handleSendImageMessage(imageUrl);
 
