@@ -7,7 +7,7 @@ export const NavigationBar = () => {
     return (
         <Navbar expand="lg" className="navbar bg-body-tertiary" fixed="top">
             <Navbar.Brand href="/">
-                <img src="src/assets/chatter-logo.svg" className="chatter-logo" width="30" height="30" />
+                <img src="/chatter-logo.svg" className="chatter-logo" width="30" height="30" />
                 {' '}Chatter
             </Navbar.Brand>
             <Navbar.Collapse id="basic-navbar-nav">
