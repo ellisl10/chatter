@@ -10,6 +10,7 @@ import { Settings } from './app/pages/settings/Settings.jsx'
 import { MyAccount } from './app/pages/settings/MyAccount.jsx'
 import { Privacy } from './app/pages/settings/Privacy.jsx'
 import { AboutUs } from './app/pages/settings/AboutUs.jsx'
+import { EditMyAccount } from './app/pages/settings/EditMyAccount.jsx'
 import MessageToasts from './components/MessageToasts';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route index element={<MyAccount />} />
             <Route path='privacy' element={<Privacy />} />
             <Route path='about-us' element={<AboutUs />} />
+            <Route path='my-account/edit' element={<EditMyAccount />} />
           </Route>
         </Routes>
         <MessageToasts />
