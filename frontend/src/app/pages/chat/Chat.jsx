@@ -451,6 +451,7 @@ export function Chat() {
                                                     </div>
                                                 </div>
                                             ))}
+                                        <div ref={messagesEndRef} />
                                     </div>
                                     {imagePreview && (
                                         <div className="image-preview-container">
@@ -537,7 +538,6 @@ export function Chat() {
                             placeholder="Enter a group name"
                         />
                     </Form.Group>
-                    <div ref={messagesEndRef} />
                     {imagePreview && (
                         <div className="image-preview-container">
                             <img src={imagePreview} alt="preview" className="image-preview" />
