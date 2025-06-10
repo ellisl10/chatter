@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import streamifier from 'streamifier';
 
 dotenv.config();
 
@@ -25,8 +26,7 @@ router.post('/api/upload', upload.single('image'), async (req, res) => {
     );
 
     // Pipe the buffer to Cloudinary's upload stream
-    const stream = result;
-    stream.end(req.file.buffer);
+    streamifier.createReadStream(req.file.buffer).pipe(stream);
 
   } catch (err) {
     res.status(500).json({ error: 'Upload failed.' });

@@ -1,6 +1,5 @@
 import express from 'express';
 import { db } from '../firebase.mjs'; // or .js depending on your setup
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 const router = express.Router();
 
@@ -13,7 +12,7 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Missing fields' });
     }
 
-    const docRef = await addDoc(collection(db, 'messages'), {
+    const docRef = await db.collection('messages').add({
       sender,
       receiver,
       text,
@@ -43,7 +42,7 @@ router.get('/:user1/:user2', async (req, res) => {
     const { user1, user2 } = req.params;
 
     const messagesRef = collection(db, 'messages');
-    const snapshot = await getDocs(messagesRef);
+    const snapshot = await db.collection('messages').get();
 
     const messages = snapshot.docs
       .map(doc => doc.data())

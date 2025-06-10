@@ -8,7 +8,7 @@ import { db, auth } from '../../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
+import { API_BASE_URL } from '../../../utils/apiBase.js';
 
 function getChatId(uid1, uid2) {
     return [uid1, uid2].sort().join('_'); // consistent ID regardless of order
@@ -53,7 +53,7 @@ export function Chat() {
             const formData = new FormData();
             formData.append('image', imageFile);
 
-            const res = await fetch('https://us-central1-chatter-24302.cloudfunctions.net/api/upload', {
+            const res = await fetch(`${API_BASE_URL}/upload`, {
                 method: 'POST',
                 body: formData
             });
