@@ -6,7 +6,7 @@ export function AboutUs() {
     const sections = [
         {
             id: 3,
-            image: '/images/drake-inf124.jpg',
+            image: '/drake-inf124.jpg',
             title: 'Drake Smith',
             role: 'Frontend Developer',
             description: 'Specialized in React and modern web technologies',
@@ -14,7 +14,7 @@ export function AboutUs() {
         },
         {
             id: 1,
-            image: '/images/Chatter-ellis.jpg',
+            image: '/Chatter-ellis.jpg',
             title: 'Ellis Liang',
             role: 'Backend Developer',
             description: 'Expert in Firebase and cloud architecture',
@@ -22,7 +22,7 @@ export function AboutUs() {
         },
         {
             id: 4,
-            image: '/images/Chatter-Daniel.jpg',
+            image: '/Chatter-Daniel.jpg',
             title: 'Daniel Nguyen Vo',
             role: 'Full Stack Developer',
             description: 'Passionate about creating seamless user experiences',
@@ -30,7 +30,7 @@ export function AboutUs() {
         },
         {
             id: 2,
-            image: '/images/edward.jpg',
+            image: '/edward.jpg',
             title: 'Edward Henriquez',
             role: 'UI/UX Designer',
             description: 'Focused on creating beautiful and intuitive interfaces',
