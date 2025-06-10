@@ -407,7 +407,6 @@ export function Chat() {
                             })}
 
                             </div>
-                            ))}
                         </div>
                         ))}
                     </div>
