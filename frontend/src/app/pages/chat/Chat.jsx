@@ -6,8 +6,7 @@ import MarginFix from '../../../components/MarginFix';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { db, auth } from '../../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc, where } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, query, orderBy, onSnapshot, addDoc, getDocs, getDoc, setDoc, doc } from 'firebase/firestore';
 import { API_BASE_URL } from '../../../utils/apiBase.js';
 
 function getChatId(uid1, uid2) {
@@ -121,18 +120,28 @@ export function Chat() {
     useEffect(() => {
         if(!auth.currentUser) return;
 
-        const groupsRef = collection(db, "groups");
-        const q = query(groupsRef, where("members", "array-contains", auth.currentUser.uid));
-        const unsubscribeGroups = onSnapshot(q, (snapshot) => {
-            const groupList = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setGroups(groupList);
-        });
+        const fetchGroups = async () => {
+            const groupsSnapshot = await getDocs(collection(db, 'groups'));
+            const groups = groupsSnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data
+                };
+            });
 
-        return () => unsubscribeGroups();
-    }, []);
+            const allGroupIds = [];
+            // For each group, check if current user is a member
+            for (const group of groups) {
+                if (group.members && group.members.includes(auth.currentUser.uid)) {
+                    allGroupIds.push(group.id); // This user is a member of this group
+                }
+            }
+            setGroups(groups.filter(group => allGroupIds.includes(group.id)));
+        };
+        fetchGroups();
+
+    }, [displayName]);
 
     useEffect(() => {
         if (!auth.currentUser) return;
@@ -297,19 +306,20 @@ export function Chat() {
     const handleNewChat = async () => {
         setShowNewChatModal(true);
 
-        const snapshot = await getDocs(collection(db, 'users'));
-        const usersList = snapshot.docs
-        .map(doc => {
-            const data = doc.data();
-            return {
+        const contactsRef = collection(db, 'users', auth.currentUser.uid, 'contacts');
+        const snapshot = await getDocs(contactsRef);
+
+        const contactsList = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
             id: doc.id,
-            uid: data.uid || doc.id, // fallback
+            uid: doc.id,
             displayName: data.displayName || 'Unnamed',
             ...data
-            };
-        })
-        .filter(user => user.uid !== auth.currentUser?.uid);
-        setAllContacts(usersList);
+        };
+        });
+
+        setAllContacts(contactsList);
     };
 
     const handleNewGroup = async () => {
@@ -377,65 +387,70 @@ export function Chat() {
                     </aside>
 
                     <main className="chat-main">
-                    <div className="chat-header">
-                        <div className="chat-username">
-                            {selectedGroup?.name || selectedContact?.displayName || 'Select a chat'}
+                    {(!selectedContact && !selectedGroup) ? (
+                        <div className="no-thread-message">Select a thread</div>
+                    ) : (
+                        <>
+                        <div className="chat-header">
+                            <div className="chat-username">
+                                {selectedGroup?.name || selectedContact?.displayName || 'Select a chat'}
+                            </div>
+                            <div className="chat-status">Online</div>
                         </div>
-                        <div className="chat-status">Online</div>
-                    </div>
-                    <div className="chat-messages">
-                        {[...messages]
-                        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-                        .map((msg, idx) => (
-                        <div
-                            key={`${msg.from}-${msg.text || msg.imageUrl || ''}-${msg.timestamp}-${idx}`}
-                            className={`message ${msg.from === auth.currentUser?.uid ? 'outgoing' : 'incoming'}`}
-                        >
-                            {selectedGroup && msg.senderName && (
-                            <div className="sender-name">{msg.senderName}</div>
-                            )}
-                            {msg.imageUrl && (
-                            <img src={msg.imageUrl} alt="sent" className="sent-image" />
-                            )}
-                            {msg.text && (
-                            <div className="text-message">{msg.text}</div>
-                            )}
-                            <div className="message-timestamp">
-                            {msg.timestamp && new Date(msg.timestamp?.toDate?.() || msg.timestamp).toLocaleTimeString([], {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}
+                        <div className="chat-messages">
+                            {[...messages]
+                            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                            .map((msg, idx) => (
+                            <div
+                                key={`${msg.from}-${msg.text || msg.imageUrl || ''}-${msg.timestamp}-${idx}`}
+                                className={`message ${msg.from === auth.currentUser?.uid ? 'outgoing' : 'incoming'}`}
+                            >
+                                {selectedGroup && msg.senderName && (
+                                <div className="sender-name">{msg.senderName}</div>
+                                )}
+                                {msg.imageUrl && (
+                                <img src={msg.imageUrl} alt="sent" className="sent-image" />
+                                )}
+                                {msg.text && (
+                                <div className="text-message">{msg.text}</div>
+                                )}
+                                <div className="message-timestamp">
+                                {msg.timestamp && new Date(msg.timestamp?.toDate?.() || msg.timestamp).toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
 
+                                </div>
                             </div>
+                            ))}
                         </div>
-                        ))}
-                    </div>
-                    {imagePreview && (
-                        <div className="image-preview-container">
-                            <img src={imagePreview} alt="preview" className="image-preview" />
-                            <div className="preview-buttons">
-                                <button onClick={handleConfirmImageSend}
-                                disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
-                                <button onClick={cancelImagePreview}>Cancel</button>
+                        {imagePreview && (
+                            <div className="image-preview-container">
+                                <img src={imagePreview} alt="preview" className="image-preview" />
+                                <div className="preview-buttons">
+                                    <button onClick={handleConfirmImageSend}
+                                    disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
+                                    <button onClick={cancelImagePreview}>Cancel</button>
+                                </div>
                             </div>
+                        )}
+                        <div className="chat-input">
+                            <input
+                            type="text"
+                            placeholder="Type a message..."
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                            />
+                            <button className="send-button" onClick={handleSendMessage}>➤</button>
                         </div>
+                        </>
                     )}
-                    <div className="chat-input">
-                        <input
-                        type="text"
-                        placeholder="Type a message..."
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                        />
-                        <button className="send-button" onClick={handleSendMessage}>➤</button>
-                    </div>
-
                     </main>
                 </div>
             </div>
