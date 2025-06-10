@@ -27,7 +27,6 @@ function App() {
           <Route path='about-us' element={<AboutUs/>}/>
           <Route path='support' element={<Support/>}/>
         </Routes>
-        <MessageToasts />
       </BrowserRouter>
     </>
   )
