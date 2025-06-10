@@ -118,29 +118,24 @@ export function Chat() {
     }, []);
 
     useEffect(() => {
-        if(!auth.currentUser) return;
-
-        const fetchGroups = async () => {
-            const groupsSnapshot = await getDocs(collection(db, 'groups'));
-            const groups = groupsSnapshot.docs.map(doc => {
+        if (!auth.currentUser) return;
+    
+        const q = collection(db, 'groups');
+    
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const allGroups = snapshot.docs.map(doc => {
                 const data = doc.data();
-                return {
-                    id: doc.id,
-                    ...data
-                };
+                return { id: doc.id, ...data };
             });
-
-            const allGroupIds = [];
-            // For each group, check if current user is a member
-            for (const group of groups) {
-                if (group.members && group.members.includes(auth.currentUser.uid)) {
-                    allGroupIds.push(group.id); // This user is a member of this group
-                }
-            }
-            setGroups(groups.filter(group => allGroupIds.includes(group.id)));
-        };
-        fetchGroups();
-
+    
+            const myGroups = allGroups.filter(group => 
+                group.members?.includes(auth.currentUser.uid)
+            );
+    
+            setGroups(myGroups);
+        });
+    
+        return () => unsubscribe();
     }, [displayName]);
 
     useEffect(() => {
@@ -395,7 +390,6 @@ export function Chat() {
                             <div className="chat-username">
                                 {selectedGroup?.name || selectedContact?.displayName || 'Select a chat'}
                             </div>
-                            <div className="chat-status">Online</div>
                         </div>
                         <div className="chat-messages">
                             {[...messages]
