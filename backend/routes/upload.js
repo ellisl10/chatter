@@ -2,7 +2,6 @@ import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
-import streamifier from 'streamifier';
 
 dotenv.config();
 
@@ -15,20 +14,22 @@ cloudinary.config({
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
-router.post('/api/upload', upload.single('image'), async (req, res) => {
+router.post('/upload', upload.single('image'), async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload_stream(
+    const stream = cloudinary.uploader.upload_stream(
       { folder: 'chat_images' },
       (error, result) => {
-        if (error) return res.status(500).json({ error: error.message });
+        if (error) {
+          console.error('Cloudinary error:', error);
+          return res.status(500).json({ error: error.message });
+        }
         res.json({ imageUrl: result.secure_url });
       }
     );
 
-    // Pipe the buffer to Cloudinary's upload stream
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
-
+    stream.end(req.file.buffer);
   } catch (err) {
+    console.error('Upload route error:', err);
     res.status(500).json({ error: 'Upload failed.' });
   }
 });
