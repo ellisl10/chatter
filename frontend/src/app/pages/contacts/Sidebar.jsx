@@ -26,7 +26,11 @@ export const Sidebar = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setDisplayName(user.displayName || "Anonymous");
+        const userRef = doc(db, 'users', user.uid);
+        const unsubUser = onSnapshot(userRef, (snapshot) => {
+          const data = snapshot.data();
+          if (data?.displayName) setDisplayName(data.displayName);
+        });
         const contactsRef = collection(db, "users", user.uid, "contacts");
         const unsubContacts = onSnapshot(contactsRef, (snapshot) => {
           const contactList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
