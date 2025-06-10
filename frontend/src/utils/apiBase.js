@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'https://us-central1-chatter-24302.web.app/api'; // Firebase Cloud Function
+export const API_BASE_URL = 'https://**chatter-24302**.web.app/api'; // Firebase Cloud Function
