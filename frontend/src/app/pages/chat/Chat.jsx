@@ -531,26 +531,32 @@ export function Chat() {
                     <Form.Group className="mb-3">
                         <Form.Label>Group Name</Form.Label>
                         <Form.Control
-                            <div ref={messagesEndRef} />
-                        </div>
-                        {imagePreview && (
-                            <div className="image-preview-container">
-                                <img src={imagePreview} alt="preview" className="image-preview" />
-                                <div className="preview-buttons">
-                                    <button onClick={handleConfirmImageSend}
-                                    disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
-                                    <button onClick={cancelImagePreview}>Cancel</button>
-                                </div>
-                            </div>
-                        )}
-                        <div className="chat-input">
-                            <input
                             type="text"
                             value={groupName}
                             onChange={(e) => setGroupName(e.target.value)}
                             placeholder="Enter a group name"
                         />
                     </Form.Group>
+                    <div ref={messagesEndRef} />
+                    {imagePreview && (
+                        <div className="image-preview-container">
+                            <img src={imagePreview} alt="preview" className="image-preview" />
+                            <div className="preview-buttons">
+                                <button onClick={handleConfirmImageSend}
+                                disabled={isSendingImage}>{isSendingImage ? "Sending..." : "Send Image"}</button>
+                                <button onClick={cancelImagePreview}>Cancel</button>
+                            </div>
+                        </div>
+                    )}
+                    <div className="chat-input">
+                        <input
+                            type="text"
+                            placeholder="Type a message..."
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                        />
+                    </div>
                     <Form.Label>Select Members</Form.Label>
                     <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                         {allContacts.map(user => (
