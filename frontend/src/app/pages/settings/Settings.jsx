@@ -3,10 +3,11 @@ import { NavigationBar } from '../../../components/NavigationBar';
 import { Button } from './EditButton';
 import './Settings.css';
 import { Modal } from 'react-bootstrap';
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../../../firebase";
 
 export function Settings() {
   const [showEditModal, setShowEditModal] = useState(false);
-  const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     displayName: '',
     username: '',
@@ -14,27 +15,29 @@ export function Settings() {
   });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/users');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const users = await response.json();
-        if (users.length > 0) {
-          const user = users[0];
-          setUserId(user.id);
-          setFormData({
-            displayName: user.displayName || '',
-            username: user.username || '',
-            email: user.email || ''
-          });
-        }
-      } catch (error) {
-        console.error("Could not fetch user data:", error);
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        const fetchUserData = async () => {
+          try {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+              const data = userSnap.data();
+              setFormData({
+                displayName: data.displayName || '',
+                username: data.username || '',
+                email: data.email || '',
+              });
+            }
+          } catch (error) {
+            console.error("Could not fetch user data:", error);
+          }
+        };
+        fetchUserData();
       }
-    };
-    fetchUserData();
+    });
+  
+    return () => unsubscribe(); // cleanup
   }, []);
 
   const handleInputChange = (e) => {
@@ -45,28 +48,18 @@ export function Settings() {
     }));
   };
 
-  const handleSave = async () => {
-    if (!userId) {
-      console.error("User ID is not available. Cannot save changes.");
-      return;
-    }
+  const handleSaveChanges = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/users/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        displayName: formData.displayName,
+        username: formData.username,
+        email: formData.email,
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      console.log('User updated successfully');
       setShowEditModal(false);
     } catch (error) {
-      console.error('Error saving changes:', error);
+      console.error("Error updating Firestore:", error);
+      alert("Failed to update settings.");
     }
   };
 
@@ -170,7 +163,7 @@ export function Settings() {
           <button className="btn btn-secondary" onClick={() => setShowEditModal(false)}>
             Cancel
           </button>
-          <button className="btn btn-primary" onClick={handleSave}>
+          <button className="btn btn-primary" onClick={handleSaveChanges}>
             Save Changes
           </button>
         </Modal.Footer>

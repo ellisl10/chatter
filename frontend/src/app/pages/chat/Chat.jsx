@@ -139,7 +139,11 @@ export function Chat() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                setDisplayName(user.displayName || "Anonymous");
+                const userRef = doc(db, 'users', user.uid);
+                const unsubUser = onSnapshot(userRef, (snapshot) => {
+                const data = snapshot.data();
+                if (data?.displayName) setDisplayName(data.displayName);
+                });
             } else {
                 setDisplayName(null); // user signed out
             }
