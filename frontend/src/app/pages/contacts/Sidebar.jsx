@@ -4,7 +4,7 @@ import { BsPerson } from 'react-icons/bs';
 import { Modal, Button } from 'react-bootstrap';
 import { auth, db } from '../../../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 
 function groupByFirstLetter(data) {
   const grouped = {};
@@ -50,6 +50,19 @@ export const Sidebar = () => {
   const handleContactClick = (contact) => {
     setSelectedContact(contact);
     setShowModal(true);
+  };
+
+  const handleDeleteContact = async () => {
+    if (!selectedContact) return;
+    try {
+      const contactRef = doc(db, "users", auth.currentUser.uid, "contacts", selectedContact.id);
+      await deleteDoc(contactRef); // Actually deletes the document
+      setShowModal(false);
+      setSelectedContact(null);
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+      alert("Failed to delete contact. Please try again.");
+    }
   };
 
   const handleCloseModal = () => {
@@ -109,8 +122,8 @@ export const Sidebar = () => {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-            <Button variant="primary" onClick={() => window.location.href = `/chat`}>
-              Message
+            <Button variant="primary" onClick={handleDeleteContact}>
+              Delete Contact
             </Button>
           </Modal.Footer>
         </Modal>
