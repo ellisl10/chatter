@@ -10,7 +10,6 @@ import { ContactsPage } from './app/pages/contacts/ContactsPage.jsx'
 import { Settings } from './app/pages/settings/Settings.jsx'
 import { AboutUs } from './app/pages/settings/AboutUs.jsx';
 import { Support } from './app/pages/settings/Support.jsx';
-import MessageToasts from './components/MessageToasts';
 
 function App() {
   return (
