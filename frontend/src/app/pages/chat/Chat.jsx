@@ -84,14 +84,20 @@ export function Chat() {
             formData.append('image', imageFile);
 
             const res = await fetch(`${API_BASE_URL}/upload`, {
-                method: 'POST',
-                body: formData
+            method: 'POST',
+            body: formData, // do NOT set headers
             });
-            const data = await res.json();
+
+            if (!res.ok) {
+            const text = await res.text(); // helpful for debugging
+            console.error("Raw server response:", text);
+            throw new Error(`Upload failed: ${res.status}`);
+            }
+
+            const data = await res.json(); // only parse JSON if response is OK
             const imageUrl = data.imageUrl;
 
             await handleSendImageMessage(imageUrl);
-
             cancelImagePreview();
         } catch (err) {
             console.error("Error sending image:", err);
@@ -99,7 +105,7 @@ export function Chat() {
         } finally {
             setIsSendingImage(false);
         }
-    }
+    };
 
     const handleGroupClick = (group) => {
         if (unsubscribeChatListener) unsubscribeChatListener();

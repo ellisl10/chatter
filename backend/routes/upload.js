@@ -24,30 +24,35 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/', upload.single('image'), async (req, res) => {
-  console.log("🟢 Upload route hit");
-
-  if (!req.file) {
-    console.error("🔴 No file received in request");
-    return res.status(400).json({ error: 'No file uploaded.' });
-  }
+  console.log('[upload] Route hit');
 
   try {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'chat_images' },
-      (error, result) => {
-        if (error) {
-          console.error('🔴 Cloudinary error:', error);
-          return res.status(500).json({ error: error.message });
-        }
-        console.log("✅ Image uploaded to:", result.secure_url);
-        res.json({ imageUrl: result.secure_url });
-      }
-    );
+    if (!req.file) {
+      console.error('[upload] No file uploaded');
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
 
-    stream.end(req.file.buffer);
+    console.log('[upload] File received:', req.file.originalname);
+
+    const streamUpload = () =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream((error, result) => {
+          if (result) {
+            console.log('[upload] Upload success:', result.secure_url);
+            resolve(result);
+          } else {
+            console.error('[upload] Upload error:', error);
+            reject(error);
+          }
+        });
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+    const result = await streamUpload();
+    res.json({ imageUrl: result.secure_url });
   } catch (err) {
-    console.error('🔴 Upload route error:', err);
-    res.status(500).json({ error: 'Upload failed.' });
+    console.error('[upload] Unexpected error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
