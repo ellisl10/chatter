@@ -40,12 +40,14 @@ useEffect(() => {
   }
 }, [users]);
 
-const filteredUsernames = allUsers.filter(
-  (user) =>
-    user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    user.id !== currentUser?.uid && // ✅ Don't show self
-    !contacts.some((contact) => contact.uid === user.id) // ✅ Don't show existing contacts
-);
+const filteredUsernames = searchTerm
+  ? allUsers.filter(
+      (user) =>
+        user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        user.id !== currentUser?.uid &&
+        !contacts.some((contact) => contact.uid === user.id)
+    )
+  : [];
 
   const handleAddContact = async (userToAdd) => {
     if (!currentUser || !userToAdd) return;
@@ -91,9 +93,9 @@ const filteredUsernames = allUsers.filter(
               </ListGroup.Item>
             ))}
           </ListGroup>
-        ) : (
-          <p className="text-muted text-center">No users found.</p>
-        )}
+        ) : searchTerm ? (
+          <p className="text-muted text-center">No users found</p>
+        ) : null}
       </div>
     </>
   );
