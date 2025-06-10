@@ -17,40 +17,12 @@
       }
     ]
   },
-
-  "functions": [
-    {
-      "source": "backend",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        ".runtimeconfig.json"
-      ]
-    }
-  ],
+  "functions": {
+    "source": "backend"
+  },
   "firestore": {
-    "database": "(default)",
-    "location": "nam5",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
-  },
-  "apphosting": {
-    "backendId": "chatter",
-    "rootDir": "frontend",
-    "ignore": [
-      "node_modules",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log",
-      "functions"
-    ],
-    "alwaysDeployFromSource": true
   },
   "database": {
     "rules": "database.rules.json"
